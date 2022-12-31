@@ -1,7 +1,8 @@
 from config import dispatcher, bot
 from aiogram import types
+from filters import IsChatPrivate
 
 
-@dispatcher.message_handler(text='/start')
+@dispatcher.message_handler(IsChatPrivate(), text='/start')
 async def start_bot(message: types.Message):
     await bot.send_message(message.chat.id, f'Hello {message.from_user.first_name}. I am a bot for HSE students!')

@@ -1,11 +1,3 @@
-class Database:
-    connection_string = ''
+from .database import Database
 
-    def __init__(self):
-        pass
-
-    def connect(self):
-        pass
-
-    def add_deadline(self):
-        pass
+__all__ = ['Database']

@@ -11,4 +11,6 @@ class TimeParser:
         except:
             print('Error with parsing time')
         content = BeautifulSoup(result.content, 'lxml')
-        return content.find_all('span')
+        content = content.find('h3', class_='display-time monospace')
+        content = content.find('span', class_='time').text
+        return content

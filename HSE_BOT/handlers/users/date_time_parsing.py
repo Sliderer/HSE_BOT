@@ -1,5 +1,5 @@
 from config import dispatcher
-from time_parser import TimeParser
+from date_time_parsing import TimeParser
 from aiogram import types
 
 
@@ -7,4 +7,4 @@ from aiogram import types
 async def time_parsing(message: types.Message):
     parser = TimeParser()
     time = await parser.parse_time()
-    print(time)
+    await message.answer(f'The time in Moscow is: {time}')

@@ -4,7 +4,7 @@ from aiogram import types
 from date_time_parsing import TimeParser, DateTime
 
 
-@dispatcher.message_handler(IsChatPrivate(), user_id=admin_ids, text='secret')
+@dispatcher.message_handler(IsChatPrivate(), user_id=admin_ids, commands=['message_info'])
 async def admin_handler(message: types.Message):
     await bot.send_message(message.chat.id, message)
 

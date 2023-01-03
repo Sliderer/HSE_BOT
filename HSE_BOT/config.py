@@ -7,3 +7,5 @@ bot = Bot(bot_token)
 dispatcher = Dispatcher(bot, storage=MemoryStorage())
 
 admin_ids = [739247496, 606667876]
+
+commands_names = ['/parse_ruz', '/create_deadline', '/help', '/parse_time', '/message_info']

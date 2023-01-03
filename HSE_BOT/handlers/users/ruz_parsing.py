@@ -5,10 +5,9 @@ from config import dispatcher
 from states import Parsing
 from ruz_parser import Parser
 
-
 @dispatcher.message_handler(commands='parse_ruz')
 async def start_parsing_ruz(message: types.Message):
-    await message.answer('Введите ваше ФИО')
+    await message.answer('Enter your full name')
     await Parsing.writing_user_name.set()
 
 

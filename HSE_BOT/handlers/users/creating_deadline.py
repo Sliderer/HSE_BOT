@@ -8,13 +8,13 @@ from states import CreatingDeadline
 
 @dispatcher.message_handler(commands=['create_deadline'], state=None)
 async def start_creating_deadline(message: types.Message):
-    await message.answer('Введите заголовок')
+    await message.answer('Enter a title')
     await CreatingDeadline.first()
 
 
 @dispatcher.message_handler(state=CreatingDeadline.Title)
 async def getting_title(message: types.Message, state: FSMContext):
-    await message.answer('Введите описание')
+    await message.answer('Enter a description')
     title = message.text
     await state.update_data(title=title)
     await CreatingDeadline.next()
@@ -22,7 +22,7 @@ async def getting_title(message: types.Message, state: FSMContext):
 
 @dispatcher.message_handler(state=CreatingDeadline.Description)
 async def getting_description(message: types.Message, state: FSMContext):
-    await message.answer('Введите дату')
+    await message.answer('Enter a date')
     description = message.text
     await state.update_data(description=description)
     await CreatingDeadline.next()

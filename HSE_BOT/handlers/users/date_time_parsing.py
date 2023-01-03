@@ -6,5 +6,6 @@ from aiogram import types
 @dispatcher.message_handler(commands=['parse_time'])
 async def time_parsing(message: types.Message):
     parser = TimeParser()
-    time = await parser.parse_time()
-    await message.answer(f'The time in Moscow is: {time}')
+    date_time = parser.parse_date_time()
+    await message.answer(f'The time in Moscow is: {date_time[0]}')
+    await message.answer(f'The date is: {date_time[1]}')

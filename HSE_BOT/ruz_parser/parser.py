@@ -3,6 +3,6 @@ class Parser:
 
     def __int__(self):
         pass
-gi
+
     async def parse(self):
         pass

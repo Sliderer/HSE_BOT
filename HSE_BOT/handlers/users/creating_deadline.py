@@ -1,9 +1,10 @@
-import typing
+import datetime
 
-from config import dispatcher
+from config import dispatcher, database
 from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
 from states import CreatingDeadline
+from models import Deadline
 
 
 @dispatcher.message_handler(commands=['create_deadline'], state=None)
@@ -22,7 +23,7 @@ async def getting_title(message: types.Message, state: FSMContext):
 
 @dispatcher.message_handler(state=CreatingDeadline.Description)
 async def getting_description(message: types.Message, state: FSMContext):
-    await message.answer('Enter a date')
+    await message.answer('Enter a date in format dd.mm.yyyy hh:mm')
     description = message.text
     await state.update_data(description=description)
     await CreatingDeadline.next()
@@ -30,22 +31,19 @@ async def getting_description(message: types.Message, state: FSMContext):
 
 @dispatcher.message_handler(state=CreatingDeadline.Date)
 async def getting_date(message: types.Message, state: FSMContext):
-    date = message.text
+    date, time = list(map(str, message.text.split()))
+
+    date = datetime.datetime.strptime(date, '%d.%m.%Y').date()
+    time = datetime.datetime.strptime(time, '%H:%M').time()
+
     await state.update_data(date=date)
+    await state.update_data(time=time)
+
     data = await state.get_data()
-    deadline = Deadline(data)
+    user_id = message.from_user.id
+    deadline = Deadline(data, user_id)
+
+    database.add_deadline(deadline)
+
     await message.answer(str(deadline))
     await state.reset_state()
-
-
-class Deadline:
-    def __init__(self, data: typing.Dict):
-        self.__title = data['title']
-        self.__description = data['description']
-        self.__date = data['date']
-
-    def __str__(self):
-        return f'Deadline \n' \
-               f'Title: {self.__title} \n' \
-               f'Description: {self.__description} \n' \
-               f'Date: {self.__date}'

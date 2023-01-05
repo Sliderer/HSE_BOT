@@ -1,11 +1,16 @@
-from config import dispatcher
+from config import dispatcher, database
 from aiogram import types
 from filters import IsChatPrivate
 
 
+
 @dispatcher.message_handler(IsChatPrivate(), commands='start')
 async def start_bot(message: types.Message):
-    await message.answer(f'Hello {message.from_user.id}. I am a bot for HSE students!')
+    await message.answer(f'Hello {message.from_user.first_name}. I am a bot for HSE students!')
+    user_id = message.from_user.id
+    first_name = message.from_user.first_name
+    second_name = message.from_user.last_name
+    database.add_user(user_id, first_name, second_name)
 
 @dispatcher.message_handler(commands=['help'])
 async def help(message: types.Message):

@@ -1,5 +1,6 @@
 import sqlite3
-from models import Deadline
+from models import Deadline, User
+
 
 class Database:
     connection_string = 'HSE_bot.db'
@@ -25,12 +26,17 @@ class Database:
         command = f"INSERT INTO deadlines VALUES ({user_id}, '{title}', '{description}', '{date}', '{time}')"
         self.__execute_command(command)
 
-    def find_user(self) -> bool:
-        command = 'SELECT * FROM users'
+    def is_user_exists(self, user: User) -> bool:
+        command = f'SELECT * FROM users WHERE user_id={user.user_id}'
         result = self.__execute_command(command)
         return len(result) != 0
 
-    def add_user(self, user_id: int, first_name: str, second_name: str):
-        if not self.find_user():
-            command = f"INSERT INTO users VALUES ({user_id}, '{first_name}', '{second_name}')"
+    def find_user(self, user: User) -> list[User]:
+        command = f'SELECT * FROM users WHERE user_id={user.user_id}'
+        result = self.__execute_command(command)
+        return result
+
+    def add_user(self, user: User):
+        if not self.is_user_exists(user):
+            command = f"INSERT INTO users VALUES ({user.user_id}, '{user.first_name}', '{user.second_name}')"
             self.__execute_command(command)

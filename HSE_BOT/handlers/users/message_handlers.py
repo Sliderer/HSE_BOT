@@ -1,6 +1,7 @@
 from config import dispatcher, database
 from aiogram import types
 from filters import IsChatPrivate
+from models import User
 
 
 
@@ -10,7 +11,9 @@ async def start_bot(message: types.Message):
     user_id = message.from_user.id
     first_name = message.from_user.first_name
     second_name = message.from_user.last_name
-    database.add_user(user_id, first_name, second_name)
+
+    user = User(user_id, first_name, second_name)
+    database.add_user(user)
 
 @dispatcher.message_handler(commands=['help'])
 async def help(message: types.Message):

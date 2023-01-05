@@ -1,10 +1,10 @@
-import typing
 import datetime
 
-from config import dispatcher
+from config import dispatcher, database
 from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
 from states import CreatingDeadline
+from models import Deadline
 
 
 @dispatcher.message_handler(commands=['create_deadline'], state=None)
@@ -43,21 +43,7 @@ async def getting_date(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
     deadline = Deadline(data, user_id)
 
+    database.add_deadline(deadline)
+
     await message.answer(str(deadline))
     await state.reset_state()
-
-
-class Deadline:
-    def __init__(self, data: typing.Dict, user_id: int):
-        self.__title: str = data['title']
-        self.__description: str = data['description']
-        self.__date = data['date']
-        self.__time = data['time']
-        self.__user_id = user_id
-
-    def __str__(self):
-        return f'Deadline \n' \
-               f'Title: {self.__title} \n' \
-               f'Description: {self.__description} \n' \
-               f'Date: {self.__date} \n' \
-               f'Time: {self.__time}'

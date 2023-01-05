@@ -1,5 +1,5 @@
 import sqlite3
-
+from models import Deadline
 
 class Database:
     connection_string = 'HSE_bot.db'
@@ -15,8 +15,15 @@ class Database:
             result = cursor.fetchall()
         return result
 
-    def add_deadline(self):
-        pass
+    def add_deadline(self, deadline: Deadline):
+        user_id = deadline.user_id
+        title = deadline.title
+        description = deadline.description
+        date = deadline.date
+        time = deadline.time
+
+        command = f"INSERT INTO deadlines VALUES ({user_id}, '{title}', '{description}', '{date}', '{time}')"
+        self.__execute_command(command)
 
     def find_user(self) -> bool:
         command = 'SELECT * FROM users'

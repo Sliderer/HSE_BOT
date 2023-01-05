@@ -32,17 +32,19 @@ async def getting_description(message: types.Message, state: FSMContext):
 @dispatcher.message_handler(state=CreatingDeadline.Date)
 async def getting_date(message: types.Message, state: FSMContext):
     date, time = list(map(str, message.text.split()))
+
     date = datetime.datetime.strptime(date, '%d.%m.%Y').date()
     time = datetime.datetime.strptime(time, '%H:%M').time()
+
     await state.update_data(date=date)
     await state.update_data(time=time)
+
     data = await state.get_data()
     user_id = message.from_user.id
     deadline = Deadline(data, user_id)
+
     await message.answer(str(deadline))
     await state.reset_state()
-
-    print()
 
 
 class Deadline:

@@ -1,7 +1,7 @@
 from config import dispatcher, database
 from aiogram import types
 from filters import IsChatPrivate
-from models import User
+from models import user
 
 
 

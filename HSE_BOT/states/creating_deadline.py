@@ -5,3 +5,4 @@ class CreatingDeadline(StatesGroup):
     Title = State()
     Description = State()
     Date = State()
+    Time = State()

@@ -15,14 +15,11 @@ async def start_parsing_ruz(message: types.Message):
 
 @dispatcher.message_handler(state=Parsing.writing_user_name)
 async def get_full_name(message: types.Message, state: FSMContext):
-<<<<<<< HEAD
-    await message.answer('')
-=======
     name = message.text
     thread = threading.Thread(target=get_shedule, kwargs={'name': name})
     thread.start()
->>>>>>> Andrey
     await state.reset_state()
+
 
 def get_shedule(name):
     parser = Parser()

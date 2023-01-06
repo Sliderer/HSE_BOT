@@ -14,6 +14,7 @@ async def start_parsing_ruz(message: types.Message):
 @dispatcher.message_handler(state=Parsing.writing_user_name)
 async def get_full_name(message: types.Message, state: FSMContext):
     parser = Parser()
-    answer = await parser.parse()
-    await message.answer(answer)
+    name = message.text
+    answer = parser.get_lessons(name)
+    print(answer)
     await state.reset_state()

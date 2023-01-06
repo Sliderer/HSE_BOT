@@ -1,4 +1,4 @@
-import datetime
+import datetime, string
 
 from config import dispatcher, database
 from aiogram import types
@@ -15,16 +15,19 @@ async def start_creating_deadline(message: types.Message):
 
 @dispatcher.message_handler(state=CreatingDeadline.Title)
 async def getting_title(message: types.Message, state: FSMContext):
-    await message.answer('Enter a description')
+
     title = message.text
+    await message.answer('Enter a description')
     await state.update_data(title=title)
     await CreatingDeadline.next()
 
 
 @dispatcher.message_handler(state=CreatingDeadline.Description)
 async def getting_description(message: types.Message, state: FSMContext):
-    await message.answer('Enter a date in format dd.mm.yyyy')
     description = message.text
+
+    await message.answer('Enter a date')
+
     await state.update_data(description=description)
     await CreatingDeadline.next()
 
@@ -43,7 +46,7 @@ async def get_date(message: types.Message, state: FSMContext):
             except:
                 await message.answer('Enter date in format d:m:y or d.m.Y')
                 return
-        
+
     await state.update_data(date=date)
     await CreatingDeadline.next()
     await message.answer('Enter time')

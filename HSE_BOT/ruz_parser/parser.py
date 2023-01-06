@@ -11,6 +11,26 @@ class Parser:
         pass
 
     @staticmethod
+    def __get_good_form(lessons):
+        ans = ""
+        # max_len = 0
+        # for lesson in lessons:
+        #     max_len = max(max_len, len(max(lesson.values(), key=len)))
+        # max_len += 2
+        # ans += "+" + "-"*(max_len-2) + "+\n"
+        for lesson in lessons:
+            name = lesson['name']
+            type = lesson['type']
+            address = lesson['address']
+            professor = lesson['professor']
+            time = lesson['time']
+            date = lesson['date']
+            ans += f'{name}|\n|{time}|\n|{type}|\n|{address}|\n|{professor}|\n|{date}|\n\n'
+            ans = ans.replace('|', ' ')
+            # ans += "+" + "-" * (max_len - 2) + "+\n"
+        return ans
+
+    @staticmethod
     def __month_to_number(month: str):
         if month == 'январь':
             return "01"
@@ -44,16 +64,18 @@ class Parser:
         browser = webdriver.Chrome(options=options)
         browser.get(self.web_url)
 
-        sleep(5)
+        sleep(1)
 
         button = browser.find_element(By.XPATH, "//button[@class='btn btn-outline-secondary ng-star-inserted']")
         button.click()
-        sleep(2)
+
+        # sleep(1)
+
         input = browser.find_element(By.XPATH, "//input[@placeholder='Студент']")
         input.clear()
         input.send_keys(full_name)
 
-        sleep(5)
+        sleep(1)
 
         get = browser.find_elements(By.XPATH, "//li[@role='option']")[0]
         print(get.text)
@@ -62,7 +84,7 @@ class Parser:
         next = browser.find_elements(By.XPATH, "//button[@title='Следующая неделя']")[0]
         next.click()
 
-        sleep(5)
+        sleep(1)
 
         list = browser.find_elements(By.XPATH, "//div[@class='media item']")
         result = []
@@ -102,4 +124,4 @@ class Parser:
             result.append(lesson)
 
         browser.quit()
-        return result
+        return self.__get_good_form(result)

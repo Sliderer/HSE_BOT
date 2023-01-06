@@ -1,6 +1,5 @@
 from aiogram.utils import executor
 from config import dispatcher
-import filters, handlers, errors
 
 if __name__ == '__main__':
     print('Trying to start bot')

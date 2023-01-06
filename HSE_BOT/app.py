@@ -3,7 +3,7 @@ from config import dispatcher
 import filters, handlers, errors
 
 if __name__ == '__main__':
-    print('Trying to start bot')
+    print('Start bot')
     try:
         executor.start_polling(dispatcher)
     except:

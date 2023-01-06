@@ -6,6 +6,7 @@ from states import Parsing
 import threading
 from ruz_parser import Parser
 
+
 @dispatcher.message_handler(commands='parse_ruz')
 async def start_parsing_ruz(message: types.Message):
     await message.answer('Enter your full name/help')
@@ -18,6 +19,7 @@ async def get_full_name(message: types.Message, state: FSMContext):
     thread = threading.Thread(target=get_shedule, kwargs={'name': name})
     thread.start()
     await state.reset_state()
+
 
 def get_shedule(name):
     parser = Parser()

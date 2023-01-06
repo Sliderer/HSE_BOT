@@ -8,5 +8,5 @@ from aiogram.utils.exceptions import MessageTextIsEmpty
 @dispatcher.errors_handler()
 async def errors_handler(update, exception):
     if isinstance(exception, MessageTextIsEmpty):
-        logging.log('Message text is empty')
+        #logging.('Message text is empty')
         return True

@@ -4,7 +4,7 @@ from filters import IsChatPrivate
 from models import User
 
 
-@dispatcher.message_handler(IsChatPrivate(), commands='start')
+@dispatcher.message_handler(IsChatPrivate(), commands=['start'])
 async def start_bot(message: types.Message):
     await message.answer(f'Hello {message.from_user.first_name}. I am a bot for HSE students!')
     user_id = message.from_user.id

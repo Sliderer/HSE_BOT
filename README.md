@@ -1,4 +1,13 @@
 # HSE_BOT
+
+## Ссылка на бота
+
+t.me/hse_fkn_deadline_bot
+
+## Токен
+
+5909018574:AAGY7IGcfw-QaZ_M5VPEGJ9efHPtS92RHTY
+
 ## Задачи
 
 ### Парсинг RUZ (выгруз в Google Calendar или в Exel)

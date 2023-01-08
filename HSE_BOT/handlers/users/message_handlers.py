@@ -1,4 +1,4 @@
-from config import dispatcher, database, commands_names
+from config import dispatcher, database, reply_markups
 from aiogram import types
 from filters import IsChatPrivate
 from models import User
@@ -13,12 +13,8 @@ async def start_bot(message: types.Message):
     user = User(user_id, first_name, second_name)
     database.add_user(user)
 
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    for name in commands_names:
-        button = types.KeyboardButton(name)
-        markup.add(button)
-
-    await message.answer(f'Hello {message.from_user.first_name}. I am a bot for HSE students!', reply_markup=markup)
+    await message.answer(f'Hello {message.from_user.first_name}. I am a bot for HSE students!',
+                         reply_markup=reply_markups.all_commands)
 
 
 @dispatcher.message_handler(commands=['help'])

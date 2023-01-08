@@ -1,23 +1,32 @@
-import datetime, string
+import datetime
 
-from config import dispatcher, database
+from config import dispatcher, database, reply_markups
 from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
 from states import CreatingDeadline
 from models import Deadline
 
 
+async def check_answer(answer: str, state: FSMContext) -> bool:
+    if answer == 'cancel':
+        await state.reset_state()
+        return True
+    return False
+
+
 @dispatcher.message_handler(commands=['create_deadline'], state=None)
 async def start_creating_deadline(message: types.Message):
-    await message.answer('Enter a title')
+    await message.answer('Enter a title', reply_markup=reply_markups.cancel)
     await CreatingDeadline.first()
 
 
 @dispatcher.message_handler(state=CreatingDeadline.Title)
 async def getting_title(message: types.Message, state: FSMContext):
-
     title = message.text
-    await message.answer('Enter a description')
+    if await check_answer(message.text, state):
+        await message.answer('Cancel', reply_markup=reply_markups.all_commands)
+        return
+    await message.answer('Enter a description', reply_markup=reply_markups.cancel)
     await state.update_data(title=title)
     await CreatingDeadline.next()
 
@@ -25,8 +34,10 @@ async def getting_title(message: types.Message, state: FSMContext):
 @dispatcher.message_handler(state=CreatingDeadline.Description)
 async def getting_description(message: types.Message, state: FSMContext):
     description = message.text
-
-    await message.answer('Enter a date')
+    if await check_answer(message.text, state):
+        await message.answer('Cancel', reply_markup=reply_markups.all_commands)
+        return
+    await message.answer('Enter a date', reply_markup=reply_markups.cancel)
 
     await state.update_data(description=description)
     await CreatingDeadline.next()
@@ -35,6 +46,10 @@ async def getting_description(message: types.Message, state: FSMContext):
 @dispatcher.message_handler(state=CreatingDeadline.Date)
 async def get_date(message: types.Message, state: FSMContext):
     date = message.text
+    if await check_answer(message.text, state):
+        await message.answer('Cancel', reply_markup=reply_markups.all_commands)
+        return
+
     try:
         date = datetime.datetime.strptime(date, '%d.%m.%Y').date()
     except:
@@ -44,17 +59,20 @@ async def get_date(message: types.Message, state: FSMContext):
             try:
                 date = datetime.datetime.strptime(date, '%d:%m:%Y').date()
             except:
-                await message.answer('Enter date in format d:m:y or d.m.Y')
+                await message.answer('Enter date in format d:m:y or d.m.Y', reply_markup=reply_markups.cancel)
                 return
 
     await state.update_data(date=date)
     await CreatingDeadline.next()
-    await message.answer('Enter time')
+    await message.answer('Enter time', reply_markup=reply_markups.cancel)
 
 
 @dispatcher.message_handler(state=CreatingDeadline.Time)
 async def getting_time(message: types.Message, state: FSMContext):
     time = message.text
+    if await check_answer(message.text, state):
+        await message.answer('Cancel', reply_markup=reply_markups.all_commands)
+        return
 
     try:
         time = datetime.datetime.strptime(time, '%H:%M').time()
@@ -65,7 +83,7 @@ async def getting_time(message: types.Message, state: FSMContext):
             try:
                 time = datetime.datetime.strptime(time, '%H %M').time()
             except:
-                await message.answer('Enter time if format H:M or H.M')
+                await message.answer('Enter time if format H:M or H.M', reply_markup=reply_markups.cancel)
                 return
 
     await state.update_data(time=time)

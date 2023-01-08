@@ -7,17 +7,24 @@ from config import dispatcher, bot
 from states import Parsing
 import threading
 from ruz_parser import Parser
+from config import reply_markups
 
 
 @dispatcher.message_handler(commands='parse_ruz')
 async def start_parsing_ruz(message: types.Message):
-    await message.answer('Enter your full name')
+    await message.answer('Enter your full name', reply_markup=reply_markups.cancel)
     await Parsing.writing_user_name.set()
 
 
 @dispatcher.message_handler(state=Parsing.writing_user_name)
 async def get_full_name(message: types.Message, state: FSMContext):
     name = message.text
+
+    if message.text == 'cancel':
+        await message.answer('Canceled', reply_markup=reply_markups.all_commands)
+        await state.reset_state()
+        return
+
     parser = Parser()
     answer = parser.get_lessons(name)
     await message.answer(answer)

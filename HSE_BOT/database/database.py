@@ -1,5 +1,6 @@
 import sqlite3
 from models import Deadline, User
+from typing import List
 
 
 class Database:
@@ -31,7 +32,7 @@ class Database:
         result = self.__execute_command(command)
         return len(result) != 0
 
-    def find_user(self, user: User) -> list[User]:
+    def find_user(self, user: User) -> List[User]:
         command = f'SELECT * FROM users WHERE user_id={user.user_id}'
         result = self.__execute_command(command)
         return result

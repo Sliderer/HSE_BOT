@@ -14,5 +14,5 @@ commands_names = ['/parse_ruz', '/create_deadline', '/help', '/parse_time', '/me
 
 database = Database()
 
-reply_markups = ReplyMarkups()
+reply_markups = ReplyMarkups(commands_names)
 

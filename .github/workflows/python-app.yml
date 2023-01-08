@@ -37,5 +37,5 @@ jobs:
     - name: Start bot
       run: |
         ls
-        cd HSE_bot
+        cd HSE_BOT
         ls

@@ -5,31 +5,6 @@ from multiprocessing import Process
 import schedule
 
 def start_bot():
-    print('start bot')
-    executor.start_polling(dispatcher)
-
-
-def start_schedule():
-    print('schedule')
-    while True:
-        pass
-
-
-if __name__ == '__main__':
-    schedule_thread = Process(target=start_schedule)
-    bot_thread = Process(target=start_bot)
-
-    schedule_thread.start()
-    bot_thread.start()
-
-    schedule_thread.join()
-    bot_thread.join()
-
-
-
-
-
-def start_bot():
     print('Trying to start bot')
     try:
         executor.start_polling(dispatcher)

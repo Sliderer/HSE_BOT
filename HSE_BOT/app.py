@@ -2,7 +2,6 @@ from aiogram.utils import executor
 from config import dispatcher
 import filters, handlers, errors
 from multiprocessing import Process
-import asyncio
 
 
 def start_bot():
@@ -28,6 +27,7 @@ if __name__ == '__main__':
 
 
 import schedule
+
 
 def start_bot():
     print('Trying to start bot')

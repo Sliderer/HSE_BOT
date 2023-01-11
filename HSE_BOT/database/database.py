@@ -24,7 +24,7 @@ class Database:
         date = deadline.date
         time = deadline.time
 
-        command = f"INSERT INTO deadlines VALUES ({user_id}, '{title}', '{description}', '{date}', '{time}')"
+        command = f"INSERT INTO deadlines VALUES (NULL, {user_id}, '{title}', '{description}', '{date}', '{time}')"
         self.__execute_command(command)
 
     def is_user_exists(self, user: User) -> bool:

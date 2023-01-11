@@ -47,27 +47,26 @@ class TimeParser:
 
 
 class FormatConverter:
-
     months_str_to_num = {
-        'январь': '01',
-        'февраль': '02',
-        'март': '03',
-        'апрель': '04',
-        'май': '05',
-        'июнь': '06',
-        'июль': '07',
-        'август': '08',
-        'сентябрь': '09',
-        'октябрь': '10',
-        'ноябрь': '11',
-        'декабрь': '12',
+        'января': '01',
+        'февраля': '02',
+        'марта': '03',
+        'апреля': '04',
+        'мая': '05',
+        'июня': '06',
+        'июля': '07',
+        'августа': '08',
+        'сентября': '09',
+        'октября': '10',
+        'ноября': '11',
+        'декабря': '12',
     }
 
     @staticmethod
-    def convert_date_format(self, date: str) -> str:
+    def convert_date_format(date: str) -> str:
         date = date.strip()
         parts = date.split()
         day = parts[0]
-        month = self.months_str_to_num[parts[1]]
+        month = FormatConverter.months_str_to_num[parts[1]]
         year = parts[2]
-        return '_'.join([year, month, day])
+        return '-'.join([year, month, day])

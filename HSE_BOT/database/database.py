@@ -42,8 +42,18 @@ class Database:
             command = f"INSERT INTO users VALUES ({user.user_id}, '{user.first_name}', '{user.second_name}')"
             self.__execute_command(command)
 
-    def get_daily_deadlines(self, date: str):
-        command = f"SELECT * FROM deadlines WHERE date='{date}'"
-        result = self.__execute_command(command)
-        print(result)
+    def __insert_daily_deadline(self, deadline_id: int):
+        command = f'INSERT INTO daily_deadlines VALUES ({deadline_id})'
+        self.__execute_command(command)
 
+    def __truncate_daily_deadlines(self):
+        command = 'DELETE FROM daily_deadlines'
+        self.__execute_command(command)
+
+    def update_daily_deadlines(self, date: str):
+        self.__truncate_daily_deadlines()
+        command = f"SELECT * FROM deadlines WHERE date='{date}'"
+        daily_deadlines = self.__execute_command(command)
+        for deadline in daily_deadlines:
+            self.__insert_daily_deadline(deadline[0])
+        print('DONE')

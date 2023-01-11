@@ -13,12 +13,16 @@ class DateTime:
     def get_date(self):
         return self.__date
 
+    def __str__(self):
+        return f'{self.__date} {self.__time}'
+
     time = property(get_time)
     date = property(get_date)
 
 
-class TimeParser:
+class DateTimeParser:
     website_url = 'https://time100.ru/index.php'
+    date_time = DateTime(' ', ' ')
 
     def parse_date_time(self) -> DateTime:
         result = ' '
@@ -31,6 +35,7 @@ class TimeParser:
         time = self.parse_time(content)
         date = self.parse_date(content)
         result = DateTime(time=time, date=date)
+        self.date_time = result
         return result
 
     def parse_time(self, content: BeautifulSoup):

@@ -1,6 +1,7 @@
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from database import Database
+from date_time_parsing import DateTimeParser
 from markups import ReplyMarkups
 
 bot_token = '5909018574:AAGY7IGcfw-QaZ_M5VPEGJ9efHPtS92RHTY'
@@ -15,4 +16,6 @@ commands_names = ['/parse_ruz', '/create_deadline', '/help', '/parse_time', '/me
 database = Database()
 
 reply_markups = ReplyMarkups(commands_names)
+
+date_time_parser = DateTimeParser()
 

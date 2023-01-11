@@ -14,8 +14,8 @@ def start_bot():
 
 
 def start_shedule():
-    #schedule.every().day.at('00:00').do()
-
+    #schedule.every().day.at('00:00').do(database.)
+    #schedule.every(6).hours().do(тянем дедлайны на 6 часов)
     while True:
         schedule.run_pending()
 

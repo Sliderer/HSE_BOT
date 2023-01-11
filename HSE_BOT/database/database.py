@@ -41,3 +41,9 @@ class Database:
         if not self.is_user_exists(user):
             command = f"INSERT INTO users VALUES ({user.user_id}, '{user.first_name}', '{user.second_name}')"
             self.__execute_command(command)
+
+    def get_daily_deadlines(self, date: str):
+        command = f"SELECT * FROM deadlines WHERE date='{date}'"
+        result = self.__execute_command(command)
+        print(result)
+

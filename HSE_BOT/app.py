@@ -2,7 +2,7 @@ from aiogram.utils import executor
 from config import dispatcher
 import filters, handlers, errors
 from multiprocessing import Process
-
+import schedule
 
 def start_bot():
     print('start bot')
@@ -26,7 +26,7 @@ if __name__ == '__main__':
     bot_thread.join()
 
 
-import schedule
+
 
 
 def start_bot():

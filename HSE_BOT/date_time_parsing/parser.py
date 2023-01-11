@@ -21,6 +21,7 @@ class TimeParser:
     website_url = 'https://time100.ru/index.php'
 
     def parse_date_time(self) -> DateTime:
+        result = ' '
         try:
             result = requests.get(self.website_url)
         except:

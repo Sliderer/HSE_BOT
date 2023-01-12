@@ -15,7 +15,7 @@ def start_bot():
 
 
 def start_schedule():
-    schedule.every().day.at('21:10').do(lambda: (
+    schedule.every().day.at('00:00').do(lambda: (
         database.update_daily_deadlines(str(date_time_parser.date_time).split()[0])
     ))
     # schedule.every(6).hours().do(тянем дедлайны на 6 часов)

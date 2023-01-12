@@ -2,10 +2,17 @@ class DateTime:
     def __init__(self, time: str, date: str):
         self.__time = time
         self.__date = date
+        self.__deadline_gap = 360
 
     def create_date_time_by_tuple(self, deadline: tuple):
         self.__date = deadline[4]
         self.__time = deadline[5]
+
+    def compare_by_time(self, compare_time: str):
+        hours, minutes, seconds = list(map(int, self.__time.split(':')))
+        compare_hours, compare_minutes, compare_seconds = list(map(int, compare_time.split(':')))
+        difference = hours * 60 + minutes - compare_hours * 60 - compare_minutes
+        return 0 <= difference <= self.__deadline_gap
 
     def get_time(self):
         return self.__time

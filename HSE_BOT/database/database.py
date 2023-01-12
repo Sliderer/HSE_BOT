@@ -3,6 +3,7 @@ from models import Deadline, User
 from typing import List
 from models import DateTime
 
+
 class Database:
     connection_string = 'HSE_bot.db'
 
@@ -46,6 +47,10 @@ class Database:
         command = f"INSERT INTO daily_deadlines VALUES ({deadline_id}, '{date}', '{time}')"
         self.__execute_command(command)
 
+    def __insert_daily_deadline_part(self, deadline_id: int, date: str, time: str):
+        command = f"INSERT INTO daily_deadlines_part VALUES ({deadline_id}, '{date}', '{time}')"
+        self.__execute_command(command)
+
     def __truncate_table(self, table_name: str):
         command = f'DELETE FROM {table_name}'
         self.__execute_command(command)
@@ -60,14 +65,22 @@ class Database:
             self.__insert_daily_deadline(deadline[0], deadline[4], deadline[5])
         print('DONE')
 
-    def update_daily_deadlines_part(self, date_time: DateTime):
-        date = date_time.date
-        time = date_time.time
+    def update_daily_deadlines_part(self, current_date_time: DateTime):
+        current_date = current_date_time.date
+        current_time = current_date_time.time
+
         self.__truncate_table('daily_deadlines_part')
         get_daily_deadlines = 'SELECT * FROM daily_deadlines'
         daily_deadlines = self.__execute_command(get_daily_deadlines)
 
-
+        for index, deadline in enumerate(daily_deadlines):
+            date_time = DateTime(' ', ' ')
+            deadline_id = deadline[0]
+            date_time = date_time.create_date_time_by_tuple(deadline)
+            daily_deadlines[index] = (deadline_id, date_time)
 
         for deadline in daily_deadlines:
-            pass
+            if deadline[1].compare_by_time(current_time):
+                date = deadline[1].date
+                time = deadline[1].time
+                self.__insert_daily_deadline_part(deadline[0], date, time)

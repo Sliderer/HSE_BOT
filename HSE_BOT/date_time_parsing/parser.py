@@ -1,30 +1,16 @@
 import requests
 from bs4 import BeautifulSoup
-
-
-class DateTime:
-    def __init__(self, time: str, date: str):
-        self.__time = time
-        self.__date = date
-
-    def get_time(self):
-        return self.__time
-
-    def get_date(self):
-        return self.__date
-
-    def __str__(self):
-        return f'{self.__date} {self.__time}'
-
-    time = property(get_time)
-    date = property(get_date)
+from models import DateTime
 
 
 class DateTimeParser:
     website_url = 'https://time100.ru/index.php'
-    date_time = DateTime(' ', ' ')
+
+    def __init__(self):
+        self.date_time = self.parse_date_time()
 
     def parse_date_time(self) -> DateTime:
+        print('Start parsing')
         result = ' '
         try:
             result = requests.get(self.website_url)
@@ -36,6 +22,7 @@ class DateTimeParser:
         date = self.parse_date(content)
         result = DateTime(time=time, date=date)
         self.date_time = result
+        print(self.date_time)
         return result
 
     def parse_time(self, content: BeautifulSoup):

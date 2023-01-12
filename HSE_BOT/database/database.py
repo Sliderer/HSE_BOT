@@ -1,6 +1,7 @@
 import sqlite3
 from models import Deadline, User
 from typing import List
+from models import DateTime
 
 
 class Database:
@@ -42,18 +43,47 @@ class Database:
             command = f"INSERT INTO users VALUES ({user.user_id}, '{user.first_name}', '{user.second_name}')"
             self.__execute_command(command)
 
-    def __insert_daily_deadline(self, deadline_id: int):
-        command = f'INSERT INTO daily_deadlines VALUES ({deadline_id})'
+    def __insert_daily_deadline(self, deadline_id: int, date: str, time: str):
+        command = f"INSERT INTO daily_deadlines VALUES ({deadline_id}, '{date}', '{time}')"
         self.__execute_command(command)
 
-    def __truncate_daily_deadlines(self):
-        command = 'DELETE FROM daily_deadlines'
+    def __insert_daily_deadline_part(self, deadline_id: int, date: str, time: str):
+        command = f"INSERT INTO daily_deadlines_part VALUES ({deadline_id}, '{date}', '{time}')"
         self.__execute_command(command)
 
-    def update_daily_deadlines(self, date: str):
-        self.__truncate_daily_deadlines()
+    def __truncate_table(self, table_name: str):
+        command = f'DELETE FROM {table_name}'
+        self.__execute_command(command)
+
+    def update_daily_deadlines(self, date_time: DateTime):
+        date = date_time.date
+        self.__truncate_table('daily_deadlines')
         command = f"SELECT * FROM deadlines WHERE date='{date}'"
         daily_deadlines = self.__execute_command(command)
+        print(daily_deadlines)
         for deadline in daily_deadlines:
-            self.__insert_daily_deadline(deadline[0])
-        print('DONE')
+            self.__insert_daily_deadline(deadline[0], deadline[4], deadline[5])
+        print('DONE UPDATE DAILY DEADLINES')
+
+    def update_daily_deadlines_part(self, current_date_time: DateTime):
+        current_date = current_date_time.date
+        current_time = current_date_time.time
+
+        self.__truncate_table('daily_deadlines_part')
+        get_daily_deadlines = 'SELECT * FROM daily_deadlines'
+        daily_deadlines = self.__execute_command(get_daily_deadlines)
+
+        for index, deadline in enumerate(daily_deadlines):
+            date_time = DateTime(' ', ' ')
+            deadline_id = int(deadline[0])
+            date_time.create_date_time_by_tuple(deadline)
+            daily_deadlines[index] = (deadline_id, date_time)
+            print(daily_deadlines[index])
+
+        for deadline in daily_deadlines:
+            if deadline[1].compare_by_time(current_time):
+                date = deadline[1].date
+                time = deadline[1].time
+                self.__insert_daily_deadline_part(deadline[0], date, time)
+
+        print('DONE UPDATE DAILY DEADLINES PART')

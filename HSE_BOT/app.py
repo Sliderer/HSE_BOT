@@ -2,7 +2,7 @@ from aiogram.utils import executor
 from config import dispatcher, date_time_parser, database
 import filters, handlers, errors
 from multiprocessing import Process
-import schedule, time
+import schedule
 
 
 def start_bot():
@@ -15,16 +15,13 @@ def start_bot():
 
 
 def start_schedule():
-    schedule.every().day.at('00:00').do(lambda: (
-        database.update_daily_deadlines(str(date_time_parser.date_time).split()[0])
-    ))
-    # schedule.every(6).hours().do(тянем дедлайны на 6 часов)
+    # schedule.every(3).seconds.do(lambda: (
+    #     database.update_daily_deadlines_part(date_time_parser.date_time)
+    # ))
+
     print('Run scheduling')
     while True:
         schedule.run_pending()
-        date_time_parser.parse_date_time()
-        print(date_time_parser.date_time)
-        time.sleep(60)
 
 
 if __name__ == '__main__':

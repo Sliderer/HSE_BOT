@@ -63,7 +63,7 @@ class Database:
         print(daily_deadlines)
         for deadline in daily_deadlines:
             self.__insert_daily_deadline(deadline[0], deadline[4], deadline[5])
-        print('DONE')
+        print('DONE UPDATE DAILY DEADLINES')
 
     def update_daily_deadlines_part(self, current_date_time: DateTime):
         current_date = current_date_time.date
@@ -75,12 +75,15 @@ class Database:
 
         for index, deadline in enumerate(daily_deadlines):
             date_time = DateTime(' ', ' ')
-            deadline_id = deadline[0]
-            date_time = date_time.create_date_time_by_tuple(deadline)
+            deadline_id = int(deadline[0])
+            date_time.create_date_time_by_tuple(deadline)
             daily_deadlines[index] = (deadline_id, date_time)
+            print(daily_deadlines[index])
 
         for deadline in daily_deadlines:
             if deadline[1].compare_by_time(current_time):
                 date = deadline[1].date
                 time = deadline[1].time
                 self.__insert_daily_deadline_part(deadline[0], date, time)
+
+        print('DONE UPDATE DAILY DEADLINES PART')

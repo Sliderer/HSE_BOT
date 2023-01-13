@@ -64,7 +64,8 @@ class Parser:
         browser = webdriver.Chrome(options=options)
         browser.get(self.web_url)
 
-        sleep(1)
+        while len(browser.find_elements(By.XPATH, "//button[@class='btn btn-outline-secondary ng-star-inserted']")) == 0:
+            sleep(0.05)
 
         button = browser.find_element(By.XPATH, "//button[@class='btn btn-outline-secondary ng-star-inserted']")
         button.click()
@@ -75,7 +76,8 @@ class Parser:
         input.clear()
         input.send_keys(full_name)
 
-        sleep(1)
+        while len(browser.find_elements(By.XPATH, "//li[@role='option']")) == 0:
+            sleep(0.05)
 
         get = browser.find_elements(By.XPATH, "//li[@role='option']")[0]
         print(get.text)
@@ -84,7 +86,12 @@ class Parser:
         next = browser.find_elements(By.XPATH, "//button[@title='Следующая неделя']")[0]
         next.click()
 
-        sleep(1)
+        delta = 0
+        while len(browser.find_elements(By.XPATH, "//div[@class='media item']")) == 0:
+            sleep(0.05)
+            delta += 0.01
+            if delta >= 3:
+                return []
 
         list = browser.find_elements(By.XPATH, "//div[@class='media item']")
         result = []

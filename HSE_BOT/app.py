@@ -15,6 +15,16 @@ def start_bot():
 
 
 def start_schedule():
+    schedule.every().minute.do(date_time_parser.parse_date_time)
+
+    schedule.every().day.at('17:29').do(lambda: (
+        database.update_daily_deadlines(date_time_parser.date_time)
+    ))
+
+    schedule.every(6).hours.do(lambda: (
+       database.update_daily_deadlines_part(date_time_parser.date_time)
+    ))
+
     # schedule.every(3).seconds.do(lambda: (
     #     database.update_daily_deadlines_part(date_time_parser.date_time)
     # ))

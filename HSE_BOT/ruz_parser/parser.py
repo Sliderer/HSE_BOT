@@ -36,45 +36,31 @@ class Parser:
             # ans += "+" + "-" * (max_len - 2) + "+\n"
         return ans
 
-    @staticmethod
-    def __month_to_number(month: str):
-        if month == 'январь':
-            return "01"
-        elif month == 'февраль':
-            return "02"
-        elif month == 'март':
-            return "03"
-        elif month == 'апрель':
-            return "04"
-        elif month == 'май':
-            return "05"
-        elif month == 'июнь':
-            return "06"
-        elif month == 'июль':
-            return "07"
-        elif month == 'август':
-            return "08"
-        elif month == 'сентябрь':
-            return "09"
-        elif month == 'октябрь':
-            return "10"
-        elif month == 'ноябрь':
-            return "11"
-        elif month == 'декабрь':
-            return "12"
+    month_to_number = {
+        'январь': "01",
+        'февраль': "02",
+        'март': "03",
+        'апрель': "04",
+        'май': "05",
+        'июнь': "06",
+        'июль': "07",
+        'август': "08",
+        'сентябрь': "09",
+        'октябрь': "10",
+        'ноябрь': "11",
+        'декабрь': "12"
+    }
 
     def get_lessons(self, full_name: str):
 
-
         self.browser.get(self.web_url)
 
-        while len(self.browser.find_elements(By.XPATH, "//button[@class='btn btn-outline-secondary ng-star-inserted']")) == 0:
+        while len(self.browser.find_elements(By.XPATH,
+                                             "//button[@class='btn btn-outline-secondary ng-star-inserted']")) == 0:
             sleep(0.05)
 
         button = self.browser.find_element(By.XPATH, "//button[@class='btn btn-outline-secondary ng-star-inserted']")
         button.click()
-
-        # sleep(1)
 
         input = self.browser.find_element(By.XPATH, "//input[@placeholder='Студент']")
         input.clear()
@@ -94,7 +80,7 @@ class Parser:
             if delta >= 3:
                 return []
 
-        list = len(self.browser.find_elements(By.XPATH, "//div[@class='media item']"))
+        cnt = len(self.browser.find_elements(By.XPATH, "//div[@class='media item']"))
         result = []
 
         days = self.browser.find_elements(By.XPATH, "//div[@class='day']")
@@ -102,7 +88,7 @@ class Parser:
         cur_date_ind = 0
         prev_time = "00:00-00:00"
 
-        for ind in range(list):
+        for ind in range(cnt):
             full_name = self.browser.find_elements(By.XPATH, "//span[@class='ng-star-inserted']")[ind].text
             type = self.browser.find_elements(By.XPATH, "//div[@class='text-muted kind ng-star-inserted']")[ind].text
             address = self.browser.find_elements(By.XPATH, "//td")[3 * ind].text
@@ -117,7 +103,7 @@ class Parser:
             day = days[cur_date_ind].get_attribute("innerHTML")
             if len(day) == 1:
                 day = "0" + day
-            month = self.__month_to_number(months[cur_date_ind].get_attribute("innerHTML"))
+            month = self.month_to_number[months[cur_date_ind].get_attribute("innerHTML")]
             year = datetime.datetime.now().year
             date = f'{day}.{month}.{year}'
 

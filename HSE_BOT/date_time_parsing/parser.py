@@ -7,7 +7,8 @@ class DateTimeParser:
     website_url = 'https://time100.ru/index.php'
 
     def __init__(self):
-        self.date_time = self.parse_date_time()
+        self.__current_date_time = self.parse_date_time()
+        self.__last_daily_deadlines_part_update = self.__current_date_time
 
     def parse_date_time(self) -> DateTime:
         print('Start parsing')
@@ -21,8 +22,8 @@ class DateTimeParser:
         time = self.parse_time(content)
         date = self.parse_date(content)
         result = DateTime(time=time, date=date)
-        self.date_time = result
-        print(self.date_time)
+        self.__current_date_time = result
+        print(self.__current_date_time)
         return result
 
     def parse_time(self, content: BeautifulSoup):
@@ -36,6 +37,20 @@ class DateTimeParser:
         content = content.split(':')[1]
         content = FormatConverter.convert_date_format(content)
         return content
+
+    def get_current_date_time(self):
+        return self.__current_date_time
+
+    def get_current_date_time_update(self):
+        self.__last_daily_deadlines_part_update = self.__current_date_time
+        return self.__current_date_time
+
+    def get_last_daily_deadlines_part_update(self):
+        return self.__last_daily_deadlines_part_update
+
+    current_date_time = property(get_current_date_time)
+    current_date_time_update = property(get_current_date_time_update)
+    last_daily_deadlines_part_update = property(get_last_daily_deadlines_part_update)
 
 
 class FormatConverter:

@@ -1,10 +1,11 @@
 import datetime
+import difflib
 
-from config import dispatcher, database, reply_markups
+from config import dispatcher, database, reply_markups, date_time_parser
 from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
 from states import CreatingDeadline
-from models import Deadline
+from models import Deadline, DateTime
 
 
 async def check_answer(answer: str, state: FSMContext) -> bool:
@@ -92,7 +93,31 @@ async def getting_time(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
     deadline = Deadline(data, user_id)
 
-    database.add_deadline(deadline)
+    current_date_time = date_time_parser.parse_date_time() # получаем текущую дату
+    last_daily_deadlines_part_update = date_time_parser.last_daily_deadlines_part_update
+
+    deadline_id = database.add_deadline(deadline)
+
+    print(f'DEADLINE_ID {deadline_id}')
+
+    if current_date_time.date == deadline.date:
+        database.add_deadline_to_daily_deadlines(deadline_id, deadline.date, deadline.time) #добавление в дневные дедлайны
+        print('ADDED TO daily')
+        deadline_date_time = DateTime(deadline.time, deadline.date)
+
+        if deadline_date_time.compare_by_time(last_daily_deadlines_part_update.time):
+            # добавляем в таблицу daily_deadline_part
+            print('ADDED TO part')
+            database.add_deadline_to_daily_deadlines_part(deadline_id, deadline.date, deadline.time)
+    else:
+        a = current_date_time.date
+        b = deadline.date
+        if len(a) != len(b):
+            print('diff len')
+        else:
+            for i in range(len(a)):
+                if a[i] != b[i]:
+                    print(f'diff in {i}')
 
     await message.answer(str(deadline))
     await state.reset_state()

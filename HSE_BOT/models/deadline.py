@@ -3,11 +3,11 @@ import typing
 
 class Deadline:
     def __init__(self, data: typing.Dict, user_id: int):
-        self.__title: str = data['title']
-        self.__description: str = data['description']
-        self.__date = data['date']
-        self.__time = data['time']
-        self.__user_id = user_id
+        self.__title: str = str(data['title'])
+        self.__description: str = str(data['description'])
+        self.__date: str = str(data['date'])
+        self.__time: str = str(data['time'])
+        self.__user_id: int = int(user_id)
 
     def __str__(self):
         return f'Deadline \n' \

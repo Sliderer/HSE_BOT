@@ -25,8 +25,10 @@ class Database:
         date = deadline.date
         time = deadline.time
 
-        command = f"INSERT INTO deadlines VALUES (NULL, {user_id}, '{title}', '{description}', '{date}', '{time}')"
-        self.__execute_command(command)
+        command = f"INSERT INTO deadlines VALUES (NULL, {user_id}, '{title}', '{description}', '{date}', '{time}')" \
+                  f" RETURNING deadline_id"
+        result = self.__execute_command(command)
+        return result[0][0]
 
     def is_user_exists(self, user: User) -> bool:
         command = f'SELECT * FROM users WHERE user_id={user.user_id}'
@@ -65,8 +67,15 @@ class Database:
             self.__insert_daily_deadline(deadline[0], deadline[4], deadline[5])
         print('DONE UPDATE DAILY DEADLINES')
 
+    def add_deadline_to_daily_deadlines(self, deadline_id: int, date: str, time: str):
+        command = f"INSERT INTO daily_deadlines VALUES ({deadline_id}, '{date}', '{time}')"
+        self.__execute_command(command)
+
+    def add_deadline_to_daily_deadlines_part(self, deadline_id: int, date: str, time: str):
+        command = f"INSERT INTO daily_deadlines_part VALUES ({deadline_id}, '{date}', '{time}')"
+        self.__execute_command(command)
+
     def update_daily_deadlines_part(self, current_date_time: DateTime):
-        current_date = current_date_time.date
         current_time = current_date_time.time
 
         self.__truncate_table('daily_deadlines_part')

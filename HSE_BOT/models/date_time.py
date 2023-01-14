@@ -1,7 +1,7 @@
 class DateTime:
     def __init__(self, time: str, date: str):
-        self.__time = time
-        self.__date = date
+        self.__time = str(time)
+        self.__date = str(date)
         self.__deadline_gap = 360
 
     def create_date_time_by_tuple(self, deadline: tuple):

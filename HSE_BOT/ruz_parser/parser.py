@@ -6,9 +6,15 @@ from time import sleep
 
 class Parser:
     web_url = "https://ruz.hse.ru/ruz/main"
+    browser = None
 
     def __init__(self):
-        pass
+        options = webdriver.ChromeOptions()
+        options.add_argument('--headless')
+        self.browser = webdriver.Chrome(options=options)
+
+    def __del__(self):
+        self.browser.quit()
 
     @staticmethod
     def __get_good_form(lessons):
@@ -59,54 +65,49 @@ class Parser:
 
     def get_lessons(self, full_name: str):
 
-        options = webdriver.ChromeOptions()
-        options.add_argument('--headless')
-        browser = webdriver.Chrome(options=options)
-        browser.get(self.web_url)
 
-        while len(browser.find_elements(By.XPATH, "//button[@class='btn btn-outline-secondary ng-star-inserted']")) == 0:
+        self.browser.get(self.web_url)
+
+        while len(self.browser.find_elements(By.XPATH, "//button[@class='btn btn-outline-secondary ng-star-inserted']")) == 0:
             sleep(0.05)
 
-        button = browser.find_element(By.XPATH, "//button[@class='btn btn-outline-secondary ng-star-inserted']")
+        button = self.browser.find_element(By.XPATH, "//button[@class='btn btn-outline-secondary ng-star-inserted']")
         button.click()
 
         # sleep(1)
 
-        input = browser.find_element(By.XPATH, "//input[@placeholder='Студент']")
+        input = self.browser.find_element(By.XPATH, "//input[@placeholder='Студент']")
         input.clear()
         input.send_keys(full_name)
 
-        while len(browser.find_elements(By.XPATH, "//li[@role='option']")) == 0:
+        while len(self.browser.find_elements(By.XPATH, "//li[@role='option']")) == 0:
             sleep(0.05)
 
-        get = browser.find_elements(By.XPATH, "//li[@role='option']")[0]
+        get = self.browser.find_element(By.XPATH, "//li[@role='option']")
         print(get.text)
         get.click()
 
-        next = browser.find_elements(By.XPATH, "//button[@title='Следующая неделя']")[0]
-        next.click()
-
         delta = 0
-        while len(browser.find_elements(By.XPATH, "//div[@class='media item']")) == 0:
+        while len(self.browser.find_elements(By.XPATH, "//div[@class='media item']")) == 0:
             sleep(0.05)
             delta += 0.01
             if delta >= 3:
                 return []
 
-        list = browser.find_elements(By.XPATH, "//div[@class='media item']")
+        list = len(self.browser.find_elements(By.XPATH, "//div[@class='media item']"))
         result = []
 
-        days = browser.find_elements(By.XPATH, "//div[@class='day']")
-        months = browser.find_elements(By.XPATH, "//div[@class='month']")
+        days = self.browser.find_elements(By.XPATH, "//div[@class='day']")
+        months = self.browser.find_elements(By.XPATH, "//div[@class='month']")
         cur_date_ind = 0
         prev_time = "00:00-00:00"
 
-        for ind, cur in enumerate(list):
-            full_name = cur.find_elements(By.XPATH, "//span[@class='ng-star-inserted']")[ind].text
-            type = cur.find_elements(By.XPATH, "//div[@class='text-muted kind ng-star-inserted']")[ind].text
-            address = cur.find_elements(By.XPATH, "//td")[3 * ind].text
-            professor = cur.find_elements(By.XPATH, "//td")[3 * ind + 2].text
-            time = str(browser.find_elements(By.XPATH, "//div[@class='time']")[ind].get_attribute("innerHTML"))
+        for ind in range(list):
+            full_name = self.browser.find_elements(By.XPATH, "//span[@class='ng-star-inserted']")[ind].text
+            type = self.browser.find_elements(By.XPATH, "//div[@class='text-muted kind ng-star-inserted']")[ind].text
+            address = self.browser.find_elements(By.XPATH, "//td")[3 * ind].text
+            professor = self.browser.find_elements(By.XPATH, "//td")[3 * ind + 2].text
+            time = str(self.browser.find_elements(By.XPATH, "//div[@class='time']")[ind].get_attribute("innerHTML"))
             time = time[1:6] + time[12] + time[19:-1]
 
             if time <= prev_time:
@@ -130,5 +131,4 @@ class Parser:
             }
             result.append(lesson)
 
-        browser.quit()
         return self.__get_good_form(result)

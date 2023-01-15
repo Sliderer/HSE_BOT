@@ -2,8 +2,8 @@ from aiogram.utils import executor
 from config import dispatcher, date_time_parser, database, bot
 import filters, handlers, errors
 from multiprocessing import Process
-import schedule, asyncio, logging
-
+import schedule, asyncio
+from logger import Logger
 
 def start_bot():
     print('Trying to start bot')

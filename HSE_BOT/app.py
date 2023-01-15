@@ -2,8 +2,7 @@ from aiogram.utils import executor
 from config import dispatcher, date_time_parser, database, bot
 import filters, handlers, errors
 from multiprocessing import Process
-import schedule
-import asyncio
+import schedule, asyncio, logging
 
 
 def start_bot():
@@ -45,6 +44,7 @@ def start_schedule():
 
 
 if __name__ == '__main__':
+
     bot_thread = Process(target=start_bot)
     schedule_thread = Process(target=start_schedule)
 

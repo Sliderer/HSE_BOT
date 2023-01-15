@@ -26,9 +26,9 @@ class Database:
         time = deadline.time
 
         command = f"INSERT INTO deadlines VALUES (NULL, {user_id}, '{title}', '{description}', '{date}', '{time}')" \
-                  f" RETURNING deadline_id"
+                  f" RETURNING *"
         result = self.__execute_command(command)
-        return result[0][0]
+        return result
 
     def is_user_exists(self, user: User) -> bool:
         command = f'SELECT * FROM users WHERE user_id={user.user_id}'
@@ -45,12 +45,14 @@ class Database:
             command = f"INSERT INTO users VALUES ({user.user_id}, '{user.first_name}', '{user.second_name}')"
             self.__execute_command(command)
 
-    def __insert_daily_deadline(self, deadline_id: int, date: str, time: str):
-        command = f"INSERT INTO daily_deadlines VALUES ({deadline_id}, '{date}', '{time}')"
+    def __insert_daily_deadline(self, deadline_id:int, deadline: Deadline):
+        command = f"INSERT INTO daily_deadlines VALUES ({deadline_id}, '{deadline.user_id}', '{deadline.title}', " \
+                  f"'{deadline.description}', '{deadline.date}', '{deadline.time}')"
         self.__execute_command(command)
 
-    def __insert_daily_deadline_part(self, deadline_id: int, date: str, time: str):
-        command = f"INSERT INTO daily_deadlines_part VALUES ({deadline_id}, '{date}', '{time}')"
+    def __insert_daily_deadline_part(self, deadline_id: int, deadline: Deadline):
+        command = f"INSERT INTO daily_deadlines_part VALUES ({deadline_id}, '{deadline.user_id}', '{deadline.title}', " \
+                  f"'{deadline.description}', '{deadline.date}', '{deadline.time}')"
         self.__execute_command(command)
 
     def __truncate_table(self, table_name: str):
@@ -64,15 +66,26 @@ class Database:
         daily_deadlines = self.__execute_command(command)
         print(daily_deadlines)
         for deadline in daily_deadlines:
-            self.__insert_daily_deadline(deadline[0], deadline[4], deadline[5])
+
+            data = {
+                    'title': deadline[2],
+                    'description': deadline[3],
+                    'date': deadline[4],
+                    'time': deadline[5]
+                    }
+
+            current_deadline = Deadline(user_id=deadline[1], data=data)
+            self.__insert_daily_deadline(deadline[0], current_deadline)
         print('DONE UPDATE DAILY DEADLINES')
 
-    def add_deadline_to_daily_deadlines(self, deadline_id: int, date: str, time: str):
-        command = f"INSERT INTO daily_deadlines VALUES ({deadline_id}, '{date}', '{time}')"
+    def add_deadline_to_daily_deadlines(self, deadline_id: int, deadline: Deadline):
+        command = f"INSERT INTO daily_deadlines VALUES ({deadline_id}, '{deadline.user_id}', '{deadline.title}', " \
+                  f"'{deadline.description}', '{deadline.date}', '{deadline.time}')"
         self.__execute_command(command)
 
-    def add_deadline_to_daily_deadlines_part(self, deadline_id: int, date: str, time: str):
-        command = f"INSERT INTO daily_deadlines_part VALUES ({deadline_id}, '{date}', '{time}')"
+    def add_deadline_to_daily_deadlines_part(self, deadline_id: int, deadline: Deadline):
+        command = f"INSERT INTO daily_deadlines_part VALUES ({deadline_id}, '{deadline.user_id}', '{deadline.title}', " \
+                  f"'{deadline.description}', '{deadline.date}', '{deadline.time}')"
         self.__execute_command(command)
 
     def update_daily_deadlines_part(self, current_date_time: DateTime):
@@ -82,17 +95,31 @@ class Database:
         get_daily_deadlines = 'SELECT * FROM daily_deadlines'
         daily_deadlines = self.__execute_command(get_daily_deadlines)
 
-        for index, deadline in enumerate(daily_deadlines):
-            date_time = DateTime(' ', ' ')
-            deadline_id = int(deadline[0])
-            date_time.create_date_time_by_tuple(deadline)
-            daily_deadlines[index] = (deadline_id, date_time)
-            print(daily_deadlines[index])
-
         for deadline in daily_deadlines:
-            if deadline[1].compare_by_time(current_time):
-                date = deadline[1].date
-                time = deadline[1].time
-                self.__insert_daily_deadline_part(deadline[0], date, time)
+            #print(deadline)
+            date_time = DateTime(date=deadline[4], time=deadline[5])
+            if date_time.compare_by_time(current_time):
 
+                data = {
+                    'title': deadline[2],
+                    'description': deadline[3],
+                    'date': deadline[4],
+                    'time': deadline[5]
+                }
+                current_deadline = Deadline(user_id=deadline[1], data=data)
+
+                self.__insert_daily_deadline_part(deadline[0], current_deadline)
+            else:
+                pass
+                #print('DIFFERENCE MORE THAN 6 HOURS')
         print('DONE UPDATE DAILY DEADLINES PART')
+
+    def get_daily_deadlines_part(self, time: str):
+        command = f"SELECT * FROM daily_deadlines_part WHERE time = '{time}'"
+        deadlines = self.__execute_command(command)
+        return deadlines
+
+    def find_deadline(self, deadline_id: int):
+        command = f'SELECT * FROM deadlines WHERE deadline_id = {deadline_id}'
+        result = self.__execute_command(command)
+        return result

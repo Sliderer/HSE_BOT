@@ -96,19 +96,27 @@ async def getting_time(message: types.Message, state: FSMContext):
     current_date_time = date_time_parser.parse_date_time() # получаем текущую дату
     last_daily_deadlines_part_update = date_time_parser.last_daily_deadlines_part_update
 
-    deadline_id = database.add_deadline(deadline)
-
-    print(f'DEADLINE ID {deadline_id}')
-
+    deadline_row = database.add_deadline(deadline)[0]
+    print(deadline_row)
     if current_date_time.date == deadline.date:
-        database.add_deadline_to_daily_deadlines(deadline_id, deadline.date, deadline.time) #добавление в дневные дедлайны
+
+        data = {
+            'title': deadline_row[2],
+            'description': deadline_row[3],
+            'date': deadline_row[4],
+            'time': deadline_row[5]
+        }
+
+        current_deadline = Deadline(user_id=deadline_row[1], data=data)
+
+        database.add_deadline_to_daily_deadlines(deadline_row[0], current_deadline) #добавление в дневные дедлайны
         print('ADDED TO daily')
         deadline_date_time = DateTime(deadline.time, deadline.date)
 
         if deadline_date_time.compare_by_time(last_daily_deadlines_part_update.time):
             # добавляем в таблицу daily_deadline_part
             print('ADDED TO part')
-            database.add_deadline_to_daily_deadlines_part(deadline_id, deadline.date, deadline.time)
+            database.add_deadline_to_daily_deadlines_part(deadline_row[0], current_deadline)
     else:
         a = current_date_time.date
         b = deadline.date

@@ -4,10 +4,6 @@ class DateTime:
         self.__date = str(date)
         self.__deadline_gap = 360
 
-    def create_date_time_by_tuple(self, deadline: tuple):
-        self.__date = deadline[1]
-        self.__time = deadline[2]
-
     def compare_by_time(self, compare_time: str):
         hours, minutes = list(map(int, self.__time.split(':')[:-1]))
         compare_hours, compare_minutes = list(map(int, compare_time.split(':')))

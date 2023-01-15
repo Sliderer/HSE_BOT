@@ -98,7 +98,7 @@ async def getting_time(message: types.Message, state: FSMContext):
 
     deadline_id = database.add_deadline(deadline)
 
-    print(f'DEADLINE_ID {deadline_id}')
+    print(f'DEADLINE ID {deadline_id}')
 
     if current_date_time.date == deadline.date:
         database.add_deadline_to_daily_deadlines(deadline_id, deadline.date, deadline.time) #добавление в дневные дедлайны
@@ -113,11 +113,11 @@ async def getting_time(message: types.Message, state: FSMContext):
         a = current_date_time.date
         b = deadline.date
         if len(a) != len(b):
-            print('diff len')
+            print('LENGTH IS DIFFERENT')
         else:
             for i in range(len(a)):
                 if a[i] != b[i]:
-                    print(f'diff in {i}')
+                    print(f'DIFFERENCE IN INDEX: {i}')
 
     await message.answer(str(deadline))
     await state.reset_state()

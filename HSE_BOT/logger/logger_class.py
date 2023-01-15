@@ -13,9 +13,8 @@ class Logger:
     def __send_log(log_type: LogTypeEnum, text: str):
         text = text.upper()
 
-        print('-' * 30)
         print(f'{log_type.value}: {text}')
-        print('-' * 30)
+        print('-' * 50)
 
     @staticmethod
     def info(text: str):

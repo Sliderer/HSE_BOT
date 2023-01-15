@@ -5,17 +5,18 @@ from multiprocessing import Process
 import schedule, asyncio
 from logger import Logger
 
+
 def start_bot():
-    print('Trying to start bot')
+    Logger.info('Start bot')
     try:
         executor.start_polling(dispatcher)
     except:
-        print('BOT NOT STARTED')
+        Logger.fatal('Bot not started')
         return
 
 
 async def check_current_deadlines():
-    print('Start checking deadlines')
+    Logger.info('Checking runtime deadlines')
     date_time_parser.parse_date_time()
     current_time = date_time_parser.current_date_time.time
     current_time += ':00'
@@ -38,13 +39,12 @@ def start_schedule():
         database.update_daily_deadlines_part(date_time_parser.current_date_time_update)
     ))
 
-    print('Run scheduling')
+    Logger.info('run scheduling')
     while True:
         schedule.run_pending()
 
 
 if __name__ == '__main__':
-
     bot_thread = Process(target=start_bot)
     schedule_thread = Process(target=start_schedule)
 

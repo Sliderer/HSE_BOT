@@ -2,6 +2,7 @@ import sqlite3
 from models import Deadline, User
 from typing import List
 from models import DateTime
+from logger import Logger
 
 
 class Database:
@@ -64,7 +65,6 @@ class Database:
         self.__truncate_table('daily_deadlines')
         command = f"SELECT * FROM deadlines WHERE date='{date}'"
         daily_deadlines = self.__execute_command(command)
-        print(daily_deadlines)
         for deadline in daily_deadlines:
 
             data = {
@@ -76,7 +76,8 @@ class Database:
 
             current_deadline = Deadline(user_id=deadline[1], data=data)
             self.__insert_daily_deadline(deadline[0], current_deadline)
-        print('DONE UPDATE DAILY DEADLINES')
+
+        Logger.info('daily deadlines updated')
 
     def add_deadline_to_daily_deadlines(self, deadline_id: int, deadline: Deadline):
         command = f"INSERT INTO daily_deadlines VALUES ({deadline_id}, '{deadline.user_id}', '{deadline.title}', " \
@@ -96,7 +97,6 @@ class Database:
         daily_deadlines = self.__execute_command(get_daily_deadlines)
 
         for deadline in daily_deadlines:
-            #print(deadline)
             date_time = DateTime(date=deadline[4], time=deadline[5])
             if date_time.compare_by_time(current_time):
 
@@ -109,10 +109,8 @@ class Database:
                 current_deadline = Deadline(user_id=deadline[1], data=data)
 
                 self.__insert_daily_deadline_part(deadline[0], current_deadline)
-            else:
-                pass
-                #print('DIFFERENCE MORE THAN 6 HOURS')
-        print('DONE UPDATE DAILY DEADLINES PART')
+
+        Logger.info('daily deadlines parts updated')
 
     def get_daily_deadlines_part(self, time: str):
         command = f"SELECT * FROM daily_deadlines_part WHERE time = '{time}'"

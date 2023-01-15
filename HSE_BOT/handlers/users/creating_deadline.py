@@ -1,11 +1,10 @@
 import datetime
-import difflib
-
 from config import dispatcher, database, reply_markups, date_time_parser
 from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
 from states import CreatingDeadline
 from models import Deadline, DateTime
+from logger import Logger
 
 
 async def check_answer(answer: str, state: FSMContext) -> bool:
@@ -93,11 +92,13 @@ async def getting_time(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
     deadline = Deadline(data, user_id)
 
-    current_date_time = date_time_parser.parse_date_time() # получаем текущую дату
+    current_date_time = date_time_parser.parse_date_time()  # получаем текущую дату
     last_daily_deadlines_part_update = date_time_parser.last_daily_deadlines_part_update
 
     deadline_row = database.add_deadline(deadline)[0]
-    print(deadline_row)
+
+    Logger.info(' '.join(deadline_row))
+
     if current_date_time.date == deadline.date:
 
         data = {
@@ -109,23 +110,18 @@ async def getting_time(message: types.Message, state: FSMContext):
 
         current_deadline = Deadline(user_id=deadline_row[1], data=data)
 
-        database.add_deadline_to_daily_deadlines(deadline_row[0], current_deadline) #добавление в дневные дедлайны
-        print('ADDED TO daily')
+        database.add_deadline_to_daily_deadlines(deadline_row[0], current_deadline)  # добавление в дневные дедлайны
+
+        Logger.info('deadline added to daily deadlines')
+
         deadline_date_time = DateTime(deadline.time, deadline.date)
 
         if deadline_date_time.compare_by_time(last_daily_deadlines_part_update.time):
             # добавляем в таблицу daily_deadline_part
-            print('ADDED TO part')
+
+            Logger.info('deadline added to daily deadlines part')
+
             database.add_deadline_to_daily_deadlines_part(deadline_row[0], current_deadline)
-    else:
-        a = current_date_time.date
-        b = deadline.date
-        if len(a) != len(b):
-            print('LENGTH IS DIFFERENT')
-        else:
-            for i in range(len(a)):
-                if a[i] != b[i]:
-                    print(f'DIFFERENCE IN INDEX: {i}')
 
     await message.answer(str(deadline))
     await state.reset_state()

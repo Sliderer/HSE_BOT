@@ -36,4 +36,4 @@ async def get_full_name(message: types.Message, state: FSMContext):
 async def get_schedule(name, message):
     parser = Parser()
     answer = parser.get_lessons(name)
-    await bot.send_message(message.chat.id, answer)
+    await bot.send_message(message.chat.id, answer, reply_markup=reply_markups.all_commands)

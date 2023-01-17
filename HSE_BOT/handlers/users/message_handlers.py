@@ -22,4 +22,4 @@ async def start_bot(message: types.Message):
 async def help(message: types.Message):
     from config import commands_names
     await message.answer('Here are all my commands:')
-    await message.answer('\n'.join(commands_names))
+    await message.answer('\n'.join(commands_names), reply_markup=reply_markups.all_commands)

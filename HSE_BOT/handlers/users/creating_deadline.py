@@ -123,5 +123,5 @@ async def getting_time(message: types.Message, state: FSMContext):
 
             database.add_deadline_to_daily_deadlines_part(deadline_row[0], current_deadline)
 
-    await message.answer(str(deadline))
+    await message.answer(str(deadline), reply_markup=reply_markups.all_commands)
     await state.reset_state()

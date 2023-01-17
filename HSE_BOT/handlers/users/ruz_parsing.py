@@ -4,19 +4,19 @@ from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
 
 from config import dispatcher, bot
-from states import Parsing
+from states import ParsingWeekSchedule
 import threading
 from ruz_parser import Parser
 from config import reply_markups
 
 
-@dispatcher.message_handler(commands='parse_ruz')
+@dispatcher.message_handler(commands='parse_week_schedule')
 async def start_parsing_ruz(message: types.Message):
     await message.answer('Enter your full name', reply_markup=reply_markups.cancel)
-    await Parsing.writing_user_name.set()
+    await ParsingWeekSchedule.writing_user_name.set()
 
 
-@dispatcher.message_handler(state=Parsing.writing_user_name)
+@dispatcher.message_handler(state=ParsingWeekSchedule.writing_user_name)
 async def get_full_name(message: types.Message, state: FSMContext):
     name = message.text
 
@@ -33,7 +33,7 @@ async def get_full_name(message: types.Message, state: FSMContext):
     await state.reset_state()
 
 
-async def get_shedule(name, message):
+async def get_schedule(name, message):
     parser = Parser()
     answer = parser.get_lessons(name)
     await bot.send_message(message.chat.id, answer)

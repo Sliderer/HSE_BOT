@@ -97,10 +97,9 @@ async def getting_time(message: types.Message, state: FSMContext):
 
     deadline_row = database.add_deadline(deadline)[0]
 
-    Logger.info(' '.join(deadline_row))
+    Logger.info(' '.join(list(map(str, deadline_row))))
 
     if current_date_time.date == deadline.date:
-
         data = {
             'title': deadline_row[2],
             'description': deadline_row[3],
@@ -108,20 +107,20 @@ async def getting_time(message: types.Message, state: FSMContext):
             'time': deadline_row[5]
         }
 
-        current_deadline = Deadline(user_id=deadline_row[1], data=data)
+    current_deadline = Deadline(user_id=deadline_row[1], data=data)
 
-        database.add_deadline_to_daily_deadlines(deadline_row[0], current_deadline)  # добавление в дневные дедлайны
+    database.add_deadline_to_daily_deadlines(deadline_row[0], current_deadline)  # добавление в дневные дедлайны
 
-        Logger.info('deadline added to daily deadlines')
+    Logger.info('deadline added to daily deadlines')
 
-        deadline_date_time = DateTime(deadline.time, deadline.date)
+    deadline_date_time = DateTime(deadline.time, deadline.date)
 
-        if deadline_date_time.compare_by_time(last_daily_deadlines_part_update.time):
-            # добавляем в таблицу daily_deadline_part
+    if deadline_date_time.compare_by_time(last_daily_deadlines_part_update.time):
+    # добавляем в таблицу daily_deadline_part
 
-            Logger.info('deadline added to daily deadlines part')
+        Logger.info('deadline added to daily deadlines part')
 
-            database.add_deadline_to_daily_deadlines_part(deadline_row[0], current_deadline)
+    database.add_deadline_to_daily_deadlines_part(deadline_row[0], current_deadline)
 
     await message.answer(str(deadline), reply_markup=reply_markups.all_commands)
     await state.reset_state()

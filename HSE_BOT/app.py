@@ -45,6 +45,7 @@ def start_schedule():
 
 
 if __name__ == '__main__':
+    Logger.info('start processes')
     bot_thread = Process(target=start_bot)
     schedule_thread = Process(target=start_schedule)
 

@@ -31,8 +31,8 @@ class Database:
         result = self.__execute_command(command)
         return result
 
-    def is_user_exists(self, user: User) -> bool:
-        command = f'SELECT * FROM users WHERE user_id={user.user_id}'
+    def is_user_exists(self, user_id: int) -> bool:
+        command = f'SELECT * FROM users WHERE user_id={user_id}'
         result = self.__execute_command(command)
         return len(result) != 0
 
@@ -42,7 +42,7 @@ class Database:
         return result
 
     def add_user(self, user: User):
-        if not self.is_user_exists(user):
+        if not self.is_user_exists(user.user_id):
             command = f"INSERT INTO users VALUES ({user.user_id}, '{user.first_name}', '{user.second_name}')"
             self.__execute_command(command)
 
@@ -121,3 +121,19 @@ class Database:
         command = f'SELECT * FROM deadlines WHERE deadline_id = {deadline_id}'
         result = self.__execute_command(command)
         return result
+
+    def is_username_saved(self, user_id: int) -> bool:
+        command = f'SELECT * FROM usernames WHERE user_id={user_id}'
+        result = self.__execute_command(command)
+        return len(result) != 0
+
+    def update_username(self, user_id: int, username: str):
+        is_user_exists = self.is_username_saved(user_id)
+        command = ' '
+        if is_user_exists:
+            command = f"UPDATE usernames SET username='{username}' WHERE user_id={user_id}"
+        else:
+            command = f"INSERT INTO usernames VALUES ({user_id}, '{username}')"
+
+        self.__execute_command(command)
+

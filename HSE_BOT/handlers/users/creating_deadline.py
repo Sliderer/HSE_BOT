@@ -20,7 +20,7 @@ async def start_creating_deadline(message: types.Message):
     await CreatingDeadline.first()
 
 
-@dispatcher.message_handler(state=CreatingDeadline.Title)
+@dispatcher.message_handler(state=CreatingDeadline.title)
 async def getting_title(message: types.Message, state: FSMContext):
     title = message.text
     if await check_answer(message.text, state):
@@ -31,7 +31,7 @@ async def getting_title(message: types.Message, state: FSMContext):
     await CreatingDeadline.next()
 
 
-@dispatcher.message_handler(state=CreatingDeadline.Description)
+@dispatcher.message_handler(state=CreatingDeadline.description)
 async def getting_description(message: types.Message, state: FSMContext):
     description = message.text
     if await check_answer(message.text, state):
@@ -43,7 +43,7 @@ async def getting_description(message: types.Message, state: FSMContext):
     await CreatingDeadline.next()
 
 
-@dispatcher.message_handler(state=CreatingDeadline.Date)
+@dispatcher.message_handler(state=CreatingDeadline.date)
 async def get_date(message: types.Message, state: FSMContext):
     date = message.text
     if await check_answer(message.text, state):
@@ -67,7 +67,7 @@ async def get_date(message: types.Message, state: FSMContext):
     await message.answer('Enter time', reply_markup=reply_markups.cancel)
 
 
-@dispatcher.message_handler(state=CreatingDeadline.Time)
+@dispatcher.message_handler(state=CreatingDeadline.time)
 async def getting_time(message: types.Message, state: FSMContext):
     time = message.text
     if await check_answer(message.text, state):

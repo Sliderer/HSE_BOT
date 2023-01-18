@@ -9,6 +9,6 @@ async def admin_handler(message: types.Message):
     await bot.send_message(message.chat.id, message)
 
 
-@dispatcher.message_handler(IsChatPrivate(), user_id=admin_ids, commands=['parse_time'])
+@dispatcher.message_handler(IsChatPrivate(), user_id=admin_ids, commands=['Parse current time'])
 async def time_parsing(message: types.Message):
     pass

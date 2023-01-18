@@ -14,7 +14,7 @@ async def check_answer(answer: str, state: FSMContext) -> bool:
     return False
 
 
-@dispatcher.message_handler(commands=['create_deadline'], state=None)
+@dispatcher.message_handler(text='Create a deadline', state=None)
 async def start_creating_deadline(message: types.Message):
     await message.answer('Enter a title', reply_markup=reply_markups.cancel)
     await CreatingDeadline.first()

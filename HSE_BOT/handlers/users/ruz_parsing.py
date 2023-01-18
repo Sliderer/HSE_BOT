@@ -10,7 +10,7 @@ from ruz_parser import Parser
 from config import reply_markups
 
 
-@dispatcher.message_handler(commands='parse_week_schedule')
+@dispatcher.message_handler(text='Parse my week schedule')
 async def start_parsing_ruz(message: types.Message):
     await message.answer('Enter your full name', reply_markup=reply_markups.cancel)
     await ParsingWeekSchedule.writing_user_name.set()

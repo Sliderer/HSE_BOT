@@ -18,7 +18,7 @@ async def start_bot(message: types.Message):
                          reply_markup=reply_markups.all_commands)
 
 
-@dispatcher.message_handler(commands=['help'])
+@dispatcher.message_handler(text='Help')
 async def help(message: types.Message):
     from config import commands_names
     await message.answer('Here are all my commands:')

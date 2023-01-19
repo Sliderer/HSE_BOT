@@ -1,5 +1,7 @@
 # HSE_BOT
 
+[![Python application](https://github.com/Sliderer/HSE_BOT/actions/workflows/python-app.yml/badge.svg)](https://github.com/Sliderer/HSE_BOT/actions/workflows/python-app.yml)
+
 ## Ссылка на бота
 
 t.me/hse_fkn_deadline_bot

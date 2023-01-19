@@ -1,3 +1,3 @@
-from .parser import TimeParser, DateTime
+from .parser import DateTimeParser, DateTime
 
-__all__ = ['TimeParser', 'DateTime']
+__all__ = ['DateTimeParser', 'DateTime']

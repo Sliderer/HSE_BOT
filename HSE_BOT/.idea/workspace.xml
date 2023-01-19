@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c5bd9da4-5de3-4e50-9093-6af8a47aef75" name="Changes" comment="" />
+    <list default="true" id="c4f3ef3c-20d6-429f-b840-92b158ec3678" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -67,11 +67,17 @@
     <servers />
   </component>
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 8561ec5b2e794dec63f2125d9a3bebf652649826
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
           <value>
+<<<<<<< HEAD
+            <State />
+=======
             <State>
               <option name="FILTERS">
                 <map>
@@ -85,11 +91,14 @@
                 </map>
               </option>
             </State>
+>>>>>>> 8561ec5b2e794dec63f2125d9a3bebf652649826
           </value>
         </entry>
       </map>
     </option>
   </component>
+<<<<<<< HEAD
+=======
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
@@ -102,4 +111,5 @@
   </component>
 =======
 >>>>>>> Andrey
+>>>>>>> 8561ec5b2e794dec63f2125d9a3bebf652649826
 </project>

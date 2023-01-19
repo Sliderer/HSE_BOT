@@ -1,17 +1,14 @@
-from config import dispatcher, bot, admin_ids
+from config import dispatcher, bot, admin_ids, date_time_parser, reply_markups
 from filters import IsChatPrivate
 from aiogram import types
-from date_time_parsing import TimeParser, DateTime
+from date_time_parsing import DateTime
 
 
 @dispatcher.message_handler(IsChatPrivate(), user_id=admin_ids, commands=['message_info'])
 async def admin_handler(message: types.Message):
-    await bot.send_message(message.chat.id, message)
+    await bot.send_message(message.chat.id, message, reply_markup=reply_markups.all_commands)
 
 
-@dispatcher.message_handler(IsChatPrivate(), user_id=admin_ids, commands=['parse_time'])
+@dispatcher.message_handler(IsChatPrivate(), user_id=admin_ids, commands=['Parse current time'])
 async def time_parsing(message: types.Message):
-    parser = TimeParser()
-    date_time: DateTime = parser.parse_date_time()
-    await message.answer(f'The time in Moscow is: {date_time.time}')
-    await message.answer(f'The date is: {date_time.date}')
+    pass

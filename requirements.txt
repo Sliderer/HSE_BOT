@@ -1,0 +1,6 @@
+aiogram~=2.12
+requests
+bs4
+selenium
+lxml
+schedule

@@ -15,6 +15,7 @@ async def start_parsing_ruz(message: types.Message):
     await message.answer('Enter your full name')
     await Parsing.writing_user_name.set()
 
+
 @dispatcher.message_handler(state=Parsing.writing_user_name)
 async def get_full_name(message: types.Message, state: FSMContext):
     name = message.text

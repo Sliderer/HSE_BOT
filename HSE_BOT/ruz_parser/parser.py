@@ -1,23 +1,21 @@
 from selenium import webdriver
 import datetime
 from selenium.webdriver.common.by import By
+from logger import Logger
 from time import sleep
-from time import time as tm
+from time import time
 
 
 class Parser:
     web_url = "https://ruz.hse.ru/ruz/main"
     browser = None
 
-    def __init__(self):
-        start = tm()
-        options = webdriver.ChromeOptions()
-        options.add_argument('--headless')
-        self.browser = webdriver.Chrome(options=options)
-        print(tm() - start)
-
-    def __del__(self):
-        self.browser.quit()
+    # def __init__(self):
+    #     start = time()
+    #     Logger.info(f"BROWSER START TIME: {time() - start}")
+    #
+    # def __del__(self):
+    #     self.browser.quit()
 
     month_to_number = {
         'январь': "01",
@@ -34,28 +32,40 @@ class Parser:
         'декабрь': "12"
     }
 
-    def get_day_schedule(self, full_name: str):
-
-        start = tm()
+    def __get_ruz_page(self, full_name: str):
+        options = webdriver.ChromeOptions()
+        options.add_argument('--headless')
+        self.browser = webdriver.Chrome(options=options)
 
         self.browser.get(self.web_url)
+
+        Logger.info(f"RUZ FOR: {full_name}")
 
         while len(self.browser.find_elements(By.XPATH,
                                              "//button[@class='btn btn-outline-secondary ng-star-inserted']")) == 0:
             sleep(0.1)
 
+        Logger.info("HERE")
         button = self.browser.find_element(By.XPATH, "//button[@class='btn btn-outline-secondary ng-star-inserted']")
         button.click()
 
-        input = self.browser.find_element(By.XPATH, "//input[@placeholder='Студент']")
+        # input = self.browser.find_element(By.XPATH, "//input[@placeholder='Студент']")
+        input = self.browser.find_element(By.XPATH, "//input[@class='ng-tns-c41-3 form-control ui-inputtext ui-widget ui-state-default ui-corner-all ui-autocomplete-input ng-star-inserted']")
+
         input.clear()
         input.send_keys(full_name)
 
+        Logger.info("HERE2")
+        delta = 0
         while len(self.browser.find_elements(By.XPATH, "//li[@role='option']")) == 0:
             sleep(0.1)
+            delta += 0.1
+            if delta >= 3:
+                return 0
+        Logger.info("HERE3")
 
         get = self.browser.find_element(By.XPATH, "//li[@role='option']")
-        print(get.text)
+        Logger.info(f"FIND RUZ FOR {get.text}")
         get.click()
 
         delta = 0
@@ -64,9 +74,13 @@ class Parser:
             sleep(0.1)
             delta += 0.1
             if delta >= 3:
-                return []
+                return 0
 
-        cnt = len(self.browser.find_elements(By.XPATH, "//div[@class='media item']"))
+        return len(self.browser.find_elements(By.XPATH, "//div[@class='media item']"))
+
+    def get_day_schedule(self, full_name: str):
+
+        cnt = self.__get_ruz_page(full_name)
         result = []
 
         days = self.browser.find_elements(By.XPATH, "//div[@class='day']")
@@ -75,7 +89,7 @@ class Parser:
         prev_time = "00:00-00:00"
 
         for ind in range(cnt):
-            full_name = self.browser.find_elements(By.XPATH, "//span[@class='ng-star-inserted']")[ind].text
+            name = self.browser.find_elements(By.XPATH, "//span[@class='ng-star-inserted']")[ind].text
             type = self.browser.find_elements(By.XPATH, "//div[@class='text-muted kind ng-star-inserted']")[ind].text
             address = self.browser.find_elements(By.XPATH, "//td")[3 * ind].text
             professor = self.browser.find_elements(By.XPATH, "//td")[3 * ind + 2].text
@@ -84,7 +98,6 @@ class Parser:
 
             if time <= prev_time:
                 break
-
             prev_time = time
 
             day = days[cur_date_ind].get_attribute("innerHTML")
@@ -95,7 +108,7 @@ class Parser:
             date = f'{day}.{month}.{year}'
 
             lesson = {
-                'name': full_name,
+                'name': name,
                 'type': type,
                 'address': address,
                 'professor': professor,
@@ -104,43 +117,12 @@ class Parser:
             }
             result.append(lesson)
 
-        print(tm() - start)
-
+        self.browser.quit()
         return result
 
     def get_week_schedule(self, full_name: str):
 
-        start = tm()
-
-        self.browser.get(self.web_url)
-
-        while len(self.browser.find_elements(By.XPATH,
-                                             "//button[@class='btn btn-outline-secondary ng-star-inserted']")) == 0:
-            sleep(0.1)
-
-        button = self.browser.find_element(By.XPATH, "//button[@class='btn btn-outline-secondary ng-star-inserted']")
-        button.click()
-
-        input = self.browser.find_element(By.XPATH, "//input[@placeholder='Студент']")
-        input.clear()
-        input.send_keys(full_name)
-
-        while len(self.browser.find_elements(By.XPATH, "//li[@role='option']")) == 0:
-            sleep(0.1)
-
-        get = self.browser.find_element(By.XPATH, "//li[@role='option']")
-        print(get.text)
-        get.click()
-
-        delta = 0
-
-        while len(self.browser.find_elements(By.XPATH, "//div[@class='media item']")) == 0:
-            sleep(0.1)
-            delta += 0.1
-            if delta >= 3:
-                return []
-
-        cnt = len(self.browser.find_elements(By.XPATH, "//div[@class='media item']"))
+        cnt = self.__get_ruz_page(full_name)
         result = []
 
         days = self.browser.find_elements(By.XPATH, "//div[@class='day']")
@@ -149,7 +131,7 @@ class Parser:
         prev_time = "00:00-00:00"
 
         for ind in range(cnt):
-            full_name = self.browser.find_elements(By.XPATH, "//span[@class='ng-star-inserted']")[ind].text
+            name = self.browser.find_elements(By.XPATH, "//span[@class='ng-star-inserted']")[ind].text
             type = self.browser.find_elements(By.XPATH, "//div[@class='text-muted kind ng-star-inserted']")[ind].text
             address = self.browser.find_elements(By.XPATH, "//td")[3 * ind].text
             professor = self.browser.find_elements(By.XPATH, "//td")[3 * ind + 2].text
@@ -168,7 +150,7 @@ class Parser:
             date = f'{day}.{month}.{year}'
 
             lesson = {
-                'name': full_name,
+                'name': name,
                 'type': type,
                 'address': address,
                 'professor': professor,
@@ -177,6 +159,5 @@ class Parser:
             }
             result.append(lesson)
 
-        print(tm() - start)
-
+        self.browser.quit()
         return result

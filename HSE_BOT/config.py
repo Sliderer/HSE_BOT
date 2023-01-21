@@ -3,6 +3,7 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from database import Database
 from date_time_parsing import DateTimeParser
 from markups import ReplyMarkups
+from ruz_parser import Parser
 
 bot_token = '5909018574:AAGY7IGcfw-QaZ_M5VPEGJ9efHPtS92RHTY'
 second_bot_token = '5622163441:AAH76Zrx5YBSAuQ3RxdfPiVVeaITWxMJ8DI'
@@ -12,13 +13,11 @@ dispatcher = Dispatcher(bot, storage=MemoryStorage())
 
 admin_ids = [739247496, 606667876]
 
-<<<<<<< HEAD
-commands_names = ['/parse_week_schedule', '/create_deadline', '/help', '/parse_time', '/message_info', '/save_name']
-=======
-commands_names = ['Parse my week schedule', 'Create a deadline', 'Help', 'Parse current time', 'Save my name']
->>>>>>> text_changing
+commands_names = ['Parse my week schedule', 'Parse my day schedule', 'Create a deadline', 'Help', 'Parse current time', 'Save my name']
 
 database = Database()
+
+parser = Parser()
 
 reply_markups = ReplyMarkups(commands_names)
 

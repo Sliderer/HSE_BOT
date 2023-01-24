@@ -89,31 +89,35 @@ class Parser:
         cur_date_ind = 0
         prev_time = "00:00-00:00"
 
-        cur_date = self.date_time_parser.current_date_time
-        print(cur_date)
+        cur_day = self.date_time_parser.current_date_time.get_date()[-2:]
 
         for ind in range(cnt):
             name = self.browser.find_elements(By.XPATH, "//span[@class='ng-star-inserted']")[ind].text
-            type = self.browser.find_elements(By.XPATH, "//div[@class='text-muted kind ng-star-inserted']")[ind].text
+            class_type = self.browser.find_elements(By.XPATH, "//div[@class='text-muted kind ng-star-inserted']")[ind].text
             address = self.browser.find_elements(By.XPATH, "//td")[3 * ind].text
             professor = self.browser.find_elements(By.XPATH, "//td")[3 * ind + 2].text
             time = str(self.browser.find_elements(By.XPATH, "//div[@class='time']")[ind].get_attribute("innerHTML"))
             time = time[1:6] + time[12] + time[19:-1]
 
             if time <= prev_time:
-                break
+                cur_date_ind += 1
             prev_time = time
 
             day = days[cur_date_ind].get_attribute("innerHTML")
             if len(day) == 1:
                 day = "0" + day
+
+            if day < cur_day:
+                continue
+            if day > cur_day:
+                break
             month = self.month_to_number[months[cur_date_ind].get_attribute("innerHTML")]
             year = datetime.datetime.now().year
             date = f'{day}.{month}.{year}'
 
             lesson = {
                 'name': name,
-                'type': type,
+                'type': class_type,
                 'address': address,
                 'professor': professor,
                 'time': time,

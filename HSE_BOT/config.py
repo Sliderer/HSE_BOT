@@ -17,9 +17,9 @@ commands_names = ['Parse my week schedule', 'Parse my day schedule', 'Create a d
 
 database = Database()
 
-parser = Parser()
+date_time_parser = DateTimeParser()
+
+parser = Parser(date_time_parser)
 
 reply_markups = ReplyMarkups(commands_names)
-
-date_time_parser = DateTimeParser()
 

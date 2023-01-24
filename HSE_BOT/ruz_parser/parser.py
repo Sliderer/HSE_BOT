@@ -3,16 +3,17 @@ import datetime
 from selenium.webdriver.common.by import By
 from logger import Logger
 from time import sleep
-from time import time
 
 
 class Parser:
     web_url = "https://ruz.hse.ru/ruz/main"
+    date_time_parser = None
     browser = None
 
-    # def __init__(self):
-    #     start = time()
-    #     Logger.info(f"BROWSER START TIME: {time() - start}")
+    def __init__(self, time_parser):
+        self.date_time_parser = time_parser
+        # start = time()
+        # Logger.info(f"BROWSER START TIME: {time() - start}")
     #
     # def __del__(self):
     #     self.browser.quit()
@@ -87,6 +88,9 @@ class Parser:
         months = self.browser.find_elements(By.XPATH, "//div[@class='month']")
         cur_date_ind = 0
         prev_time = "00:00-00:00"
+
+        cur_date = self.date_time_parser.current_date_time
+        print(cur_date)
 
         for ind in range(cnt):
             name = self.browser.find_elements(By.XPATH, "//span[@class='ng-star-inserted']")[ind].text

@@ -36,9 +36,10 @@ async def get_full_name(message: types.Message, state: FSMContext):
         await state.reset_state()
         return
 
+    await message.answer("Loading...", reply_markup=reply_markups.all_commands)
     answer = parser.get_week_schedule(name)
     formatted_schedule = ScheduleFormatter.get_good_form(answer)
-    await message.answer(formatted_schedule)
+    await message.answer(formatted_schedule, reply_markup=reply_markups.all_commands)
     # thread = threading.Thread(target=asyncio.run, args=(get_shedule(name, message),))
     # thread.start()
     await state.reset_state()
@@ -53,9 +54,10 @@ async def get_full_name(message: types.Message, state: FSMContext):
         await state.reset_state()
         return
 
+    await message.answer("Loading...", reply_markup=reply_markups.all_commands)
     answer = parser.get_day_schedule(name)
     formatted_schedule = ScheduleFormatter.get_good_form(answer)
-    await message.answer(formatted_schedule)
+    await message.answer(formatted_schedule, reply_markup=reply_markups.all_commands)
     # thread = threading.Thread(target=asyncio.run, args=(get_shedule(name, message),))
     # thread.start()
     await state.reset_state()

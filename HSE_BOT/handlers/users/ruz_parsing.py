@@ -14,14 +14,14 @@ from config import parser
 import ruz
 
 
-@dispatcher.message_handler(text='Parse my week schedule')
+@dispatcher.message_handler(text='Week schedule')
 async def start_parsing_ruz_week(message: types.Message):
     # await message.answer(ruz.person_lessons("panikulshin@edu.hse.ru"), reply_markup=reply_markups.cancel)
     await message.answer('Enter your full name', reply_markup=reply_markups.cancel)
     await ParsingWeekSchedule.writing_user_name.set()
 
 
-@dispatcher.message_handler(text='Parse my day schedule')
+@dispatcher.message_handler(text='Day schedule')
 async def start_parsing_ruz_day(message: types.Message):
     await message.answer('Enter your full name', reply_markup=reply_markups.cancel)
     await ParsingDaySchedule.writing_user_name.set()
@@ -42,6 +42,7 @@ async def get_full_name(message: types.Message, state: FSMContext):
     # thread = threading.Thread(target=asyncio.run, args=(get_shedule(name, message),))
     # thread.start()
     await state.reset_state()
+
 
 @dispatcher.message_handler(state=ParsingDaySchedule.writing_user_name)
 async def get_full_name(message: types.Message, state: FSMContext):

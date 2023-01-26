@@ -13,7 +13,7 @@ dispatcher = Dispatcher(bot, storage=MemoryStorage())
 
 admin_ids = [739247496, 606667876]
 
-commands_names = ['Parse my week schedule', 'Parse my day schedule', 'Create a deadline', 'Help', 'Parse current time', 'Save my name']
+commands_names = ['Week schedule', 'Day schedule', 'Create a deadline', 'Help', 'Parse current time', 'Save my name']
 
 database = Database()
 

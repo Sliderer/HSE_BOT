@@ -1,8 +1,8 @@
 from selenium import webdriver
-import datetime
 from selenium.webdriver.common.by import By
 from logger import Logger
 from time import sleep
+from bs4 import BeautifulSoup
 
 
 class Parser:
@@ -14,6 +14,7 @@ class Parser:
         self.date_time_parser = time_parser
         # start = time()
         # Logger.info(f"BROWSER START TIME: {time() - start}")
+
     #
     # def __del__(self):
     #     self.browser.quit()
@@ -50,8 +51,8 @@ class Parser:
         button = self.browser.find_element(By.XPATH, "//button[@class='btn btn-outline-secondary ng-star-inserted']")
         button.click()
 
-        # input = self.browser.find_element(By.XPATH, "//input[@placeholder='Студент']")
-        input = self.browser.find_element(By.XPATH, "//input[@class='ng-tns-c41-3 form-control ui-inputtext ui-widget ui-state-default ui-corner-all ui-autocomplete-input ng-star-inserted']")
+        input = self.browser.find_element(By.XPATH,
+                                          "//input[@class='ng-tns-c41-3 form-control ui-inputtext ui-widget ui-state-default ui-corner-all ui-autocomplete-input ng-star-inserted']")
 
         input.clear()
         input.send_keys(full_name)
@@ -62,7 +63,7 @@ class Parser:
             sleep(0.1)
             delta += 0.1
             if delta >= 3:
-                return 0
+                return []
         Logger.info("HERE3")
 
         get = self.browser.find_element(By.XPATH, "//li[@role='option']")
@@ -77,43 +78,29 @@ class Parser:
             if delta >= 3:
                 return 0
 
-        return len(self.browser.find_elements(By.XPATH, "//div[@class='media item']"))
+        return self.browser.find_elements(By.XPATH, "//div[@class='media item']")
 
     def get_day_schedule(self, full_name: str):
 
         cnt = self.__get_ruz_page(full_name)
         result = []
 
-        days = self.browser.find_elements(By.XPATH, "//div[@class='day']")
-        months = self.browser.find_elements(By.XPATH, "//div[@class='month']")
-        cur_date_ind = 0
-        prev_time = "00:00-00:00"
-
         cur_day = self.date_time_parser.current_date_time.get_date()[-2:]
 
-        for ind in range(cnt):
-            name = self.browser.find_elements(By.XPATH, "//span[@class='ng-star-inserted']")[ind].text
-            class_type = self.browser.find_elements(By.XPATH, "//div[@class='text-muted kind ng-star-inserted']")[ind].text
-            address = self.browser.find_elements(By.XPATH, "//td")[3 * ind].text
-            professor = self.browser.find_elements(By.XPATH, "//td")[3 * ind + 2].text
-            time = str(self.browser.find_elements(By.XPATH, "//div[@class='time']")[ind].get_attribute("innerHTML"))
-            time = time[1:6] + time[12] + time[19:-1]
+        for ind in cnt:
+            page = BeautifulSoup(ind.get_attribute("outerHTML"), "html.parser")
 
-            if time <= prev_time:
-                cur_date_ind += 1
-            prev_time = time
-
-            day = days[cur_date_ind].get_attribute("innerHTML")
-            if len(day) == 1:
-                day = "0" + day
-
-            if day < cur_day:
+            date = page.find('div', {'class': 'd-lg-none date clearfix'}).findAll('span')[0].text[1:]
+            if date[0:2] < cur_day:
                 continue
-            if day > cur_day:
+            elif date[0:2] > cur_day:
                 break
-            month = self.month_to_number[months[cur_date_ind].get_attribute("innerHTML")]
-            year = datetime.datetime.now().year
-            date = f'{day}.{month}.{year}'
+
+            name = page.find('span', {'class': 'ng-star-inserted'}).text
+            class_type = page.find('div', {'class': 'text-muted kind ng-star-inserted'}).text
+            address = page.findAll('td')[0].text
+            professor = page.findAll('td')[2].text
+            time = page.find('div', {'class': 'time'}).text
 
             lesson = {
                 'name': name,
@@ -133,33 +120,19 @@ class Parser:
         cnt = self.__get_ruz_page(full_name)
         result = []
 
-        days = self.browser.find_elements(By.XPATH, "//div[@class='day']")
-        months = self.browser.find_elements(By.XPATH, "//div[@class='month']")
-        cur_date_ind = 0
-        prev_time = "00:00-00:00"
+        for ind in cnt:
+            page = BeautifulSoup(ind.get_attribute("outerHTML"), "html.parser")
 
-        for ind in range(cnt):
-            name = self.browser.find_elements(By.XPATH, "//span[@class='ng-star-inserted']")[ind].text
-            type = self.browser.find_elements(By.XPATH, "//div[@class='text-muted kind ng-star-inserted']")[ind].text
-            address = self.browser.find_elements(By.XPATH, "//td")[3 * ind].text
-            professor = self.browser.find_elements(By.XPATH, "//td")[3 * ind + 2].text
-            time = str(self.browser.find_elements(By.XPATH, "//div[@class='time']")[ind].get_attribute("innerHTML"))
-            time = time[1:6] + time[12] + time[19:-1]
-
-            if time <= prev_time:
-                cur_date_ind += 1
-            prev_time = time
-
-            day = days[cur_date_ind].get_attribute("innerHTML")
-            if len(day) == 1:
-                day = "0" + day
-            month = self.month_to_number[months[cur_date_ind].get_attribute("innerHTML")]
-            year = datetime.datetime.now().year
-            date = f'{day}.{month}.{year}'
+            date = page.find('div', {'class': 'd-lg-none date clearfix'}).findAll('span')[0].text[1:]
+            name = page.find('span', {'class': 'ng-star-inserted'}).text
+            class_type = page.find('div', {'class': 'text-muted kind ng-star-inserted'}).text
+            address = page.findAll('td')[0].text
+            professor = page.findAll('td')[2].text
+            time = page.find('div', {'class': 'time'}).text
 
             lesson = {
                 'name': name,
-                'type': type,
+                'type': class_type,
                 'address': address,
                 'professor': professor,
                 'time': time,

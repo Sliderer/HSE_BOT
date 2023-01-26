@@ -1,5 +1,5 @@
 from aiogram.utils import executor
-from config import dispatcher, date_time_parser, database, bot
+from config import dispatcher, date_time_parser, database, bot, parser
 import filters, handlers, errors
 from multiprocessing import Process
 import schedule, asyncio

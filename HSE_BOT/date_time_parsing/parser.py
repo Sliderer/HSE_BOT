@@ -23,7 +23,7 @@ class DateTimeParser:
 
         # content = BeautifulSoup(result.content, 'lxml')
         current_datetime = datetime.datetime.now()
-        time = str(current_datetime.time()).split('.')[0][:-2]
+        time = str(current_datetime.time()).split('.')[0][:-3]
         date = str(current_datetime.date())
 
         result = DateTime(time=time, date=date)

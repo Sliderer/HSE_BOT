@@ -11,7 +11,7 @@ from ruz_parser import Parser
 from config import reply_markups
 from models import ScheduleFormatter
 from config import parser
-import ruz
+
 
 
 @dispatcher.message_handler(text='Week schedule')

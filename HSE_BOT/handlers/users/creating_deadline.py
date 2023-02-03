@@ -37,7 +37,7 @@ async def getting_description(message: types.Message, state: FSMContext):
     if await check_answer(message.text, state):
         await message.answer('Cancel', reply_markup=reply_markups.all_commands)
         return
-    await message.answer('Enter a date', reply_markup=reply_markups.cancel)
+    await message.answer('Enter a date', reply_markup=reply_markups.current_date)
 
     await state.update_data(description=description)
     await CreatingDeadline.next()

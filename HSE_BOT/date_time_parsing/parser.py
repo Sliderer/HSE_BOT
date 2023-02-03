@@ -34,17 +34,17 @@ class DateTimeParser:
 
         return result
 
-    def parse_time(self, content: BeautifulSoup):
-        content = content.find('h3', class_='display-time monospace')
-        content = content.find('span', class_='time').text
-        return content
+    @staticmethod
+    def parse_time():
+        current_datetime = datetime.datetime.now()
+        time = str(current_datetime.time()).split('.')[0][:-3]
+        return time
 
-    def parse_date(self, content: BeautifulSoup):
-        content = content.find('h3', class_='display-date monospace')
-        content = content.find('span', class_='time').text
-        content = content.split(':')[1]
-        content = FormatConverter.convert_date_format(content)
-        return content
+    @staticmethod
+    def parse_date():
+        current_datetime = datetime.datetime.now()
+        date = str(current_datetime.date())
+        return date
 
     def get_current_date_time(self):
         return self.__current_date_time

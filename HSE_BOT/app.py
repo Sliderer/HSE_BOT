@@ -1,5 +1,6 @@
 from aiogram.utils import executor
 from config import dispatcher, date_time_parser, database, bot, parser
+from models import DeadlineFormatter
 import filters, handlers, errors
 from multiprocessing import Process
 import schedule, asyncio
@@ -23,7 +24,8 @@ async def check_current_deadlines():
     deadlines = database.get_daily_deadlines_part(current_time)
 
     for deadline in deadlines:
-        await bot.send_message(deadline[1], deadline[2])
+        deadline_text = DeadlineFormatter.get_deadline_text(deadline)
+        await bot.send_message(deadline[1], deadline_text)
 
 
 def start_schedule():

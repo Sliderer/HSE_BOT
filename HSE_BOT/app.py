@@ -33,11 +33,11 @@ def start_schedule():
         asyncio.get_event_loop().run_until_complete(check_current_deadlines())
     ))
 
-    schedule.every().day.at('14:49').do(lambda: (
+    schedule.every().day.at('20:24').do(lambda: (
         database.update_daily_deadlines(date_time_parser.current_date_time)
     ))
 
-    schedule.every().day.at('14:49').do(lambda: (
+    schedule.every().day.at('20:24').do(lambda: (
         database.update_daily_deadlines_part(date_time_parser.current_date_time_update)
     ))
 

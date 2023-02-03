@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from models import DateTime
 from logger import Logger
-
+import datetime
 
 class DateTimeParser:
     website_url = 'https://time100.ru/index.php'
@@ -12,18 +12,20 @@ class DateTimeParser:
         self.__last_daily_deadlines_part_update = self.__current_date_time
 
     def parse_date_time(self, with_logger=True) -> DateTime:
-        if with_logger:
-            Logger.info('parsing time100.ru/index.php')
+        # if with_logger:
+        #     Logger.info('parsing time100.ru/index.php')
+        #
+        # result = ' '
+        # try:
+        #     result = requests.get(self.website_url)
+        # except:
+        #     Logger.fatal('error with parsing time100.ru/index.php')
 
-        result = ' '
-        try:
-            result = requests.get(self.website_url)
-        except:
-            Logger.fatal('error with parsing time100.ru/index.php')
+        # content = BeautifulSoup(result.content, 'lxml')
+        current_datetime = datetime.datetime.now()
+        time = str(current_datetime.time()).split('.')[0][:-3]
+        date = str(current_datetime.date())
 
-        content = BeautifulSoup(result.content, 'lxml')
-        time = self.parse_time(content)
-        date = self.parse_date(content)
         result = DateTime(time=time, date=date)
         self.__current_date_time = result
 

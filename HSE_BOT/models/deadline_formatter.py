@@ -1,5 +1,4 @@
-
 class DeadlineFormatter:
     @staticmethod
     def get_deadline_text(deadline) -> str:
-        return str(deadline)
+        return f'{deadline[2]} \n{deadline[3]}'

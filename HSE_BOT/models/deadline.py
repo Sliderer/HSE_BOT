@@ -10,8 +10,7 @@ class Deadline:
         self.__user_id: int = int(user_id)
 
     def __str__(self):
-        return f'Deadline \n' \
-               f'Title: {self.__title} \n' \
+        return f'Title: {self.__title} \n' \
                f'Description: {self.__description} \n' \
                f'Date: {self.__date} \n' \
                f'Time: {self.__time}'
